@@ -43,16 +43,24 @@ CREATE TABLE user_games (
     -- Wyliczana z rankingów kategorii, nigdy wpisywana ręcznie.
     score           smallint CHECK (score BETWEEN 0 AND 100),
     note            text        NOT NULL DEFAULT '',
+    -- Rośnie o 1 przy każdej zmianie statusu z innego na completed (także przy
+    -- dodaniu gry od razu jako completed). Cofnięcie statusu go nie zmniejsza.
     completed_count integer     NOT NULL DEFAULT 0 CHECK (completed_count >= 0),
+    -- Kiedy gra trafiła na półkę Ukończone albo Porzucone; podstawa panelu
+    -- „Twój {rok}”. Ustawiane przy przejściu na te statusy, czyszczone przy innych.
+    finished_at     timestamptz,
     added_at        timestamptz NOT NULL DEFAULT now(),
     updated_at      timestamptz NOT NULL DEFAULT now(),
     UNIQUE (user_id, game_id),
     -- Cel klucza obcego z category_rankings: wpis rankingu musi należeć do tego samego użytkownika.
     UNIQUE (id, user_id),
     -- W rankingach są tylko ukończone gry, więc tylko one mogą mieć ocenę.
-    CONSTRAINT user_games_score_only_completed CHECK (score IS NULL OR status = 'completed')
+    CONSTRAINT user_games_score_only_completed CHECK (score IS NULL OR status = 'completed'),
+    CONSTRAINT user_games_finished_only_final
+        CHECK (finished_at IS NULL OR status IN ('completed', 'abandoned'))
 );
 CREATE INDEX user_games_user_status_idx ON user_games (user_id, status);
+CREATE INDEX user_games_user_finished_idx ON user_games (user_id, finished_at) WHERE finished_at IS NOT NULL;
 
 CREATE TABLE category_rankings (
     user_id      bigint           NOT NULL REFERENCES users (id) ON DELETE CASCADE,
