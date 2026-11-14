@@ -7,6 +7,7 @@ import { DiscoverPage } from './pages/DiscoverPage'
 import { GamePage } from './pages/GamePage'
 import { LibraryPage } from './pages/LibraryPage'
 import { LoginPage } from './pages/LoginPage'
+import { MediaPage } from './pages/MediaPage'
 import { Placeholder } from './pages/Placeholder'
 import { ProfilePage } from './pages/ProfilePage'
 import { SearchPage } from './pages/SearchPage'
@@ -30,12 +31,7 @@ const queryClient: QueryClient = new QueryClient({
 function MediaRoute() {
   const config = useConfig()
   if (!config.mediaEnabled) return <Navigate to="/" replace />
-  return (
-    <Placeholder
-      title="Filmy, seriale i anime"
-      lead="Półki z filmami, serialami i anime pojawią się w etapie 5."
-    />
-  )
+  return <MediaPage />
 }
 
 const router = createBrowserRouter([

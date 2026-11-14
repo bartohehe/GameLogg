@@ -28,7 +28,7 @@ describe('Spine', () => {
 
   it('pomija ocenę, gdy jej nie ma', () => {
     expect(render({ status: 'in_progress', score: null }).getAttribute('aria-label')).toBe('Elden Ring, W trakcie')
-    expect(spineAriaLabel('Hades II', 'planned')).toBe('Hades II, Planowane')
+    expect(spineAriaLabel('Hades II', 'Planowane')).toBe('Hades II, Planowane')
   })
 
   it.each([

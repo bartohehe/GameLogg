@@ -8,6 +8,7 @@ import { GamePanel, GameSheet } from '../features/GamePanel'
 import { Welcome } from '../features/Welcome'
 import { useLibrary, type Entry, type LibrarySort } from '../lib/games'
 import { countGames } from '../lib/plural'
+import { useConfig } from '../lib/session'
 import { isStatus, SHELF_ORDER, STATUS, type Status } from '../lib/status'
 import { useIsMobile, useMediaQuery } from '../lib/useMediaQuery'
 import styles from './LibraryPage.module.css'
@@ -62,6 +63,7 @@ export function LibraryPage() {
   const view = params.get('view') === 'grid' ? 'grid' : 'shelf'
   const selectedId = Number(params.get('game')) || null
   const isMobile = useIsMobile()
+  const config = useConfig()
   // Poniżej 900 px panel nie mieści się obok półek, więc wybrana gra pokazuje się w dolnym arkuszu.
   const isCompact = useMediaQuery('(max-width: 899.98px)')
   const lib = useLibrary(sort)
@@ -114,6 +116,11 @@ export function LibraryPage() {
             <PlusIcon />
           </Link>
         </div>
+        {config.mediaEnabled && (
+          <Link to="/media" className={styles.mediaLink}>
+            Filmy, seriale i anime
+          </Link>
+        )}
 
         <div role="group" aria-label="Półka" className={styles.chips}>
           {SHELF_ORDER.map((s) => (

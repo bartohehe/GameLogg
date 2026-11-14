@@ -8,7 +8,10 @@ import styles from './Spine.module.css'
 
 export interface SpineProps {
   title: string
-  status: Status
+  /** Status gry. Grzbiety mediów podają zamiast niego statusLabel i bandColor. */
+  status?: Status
+  statusLabel?: string
+  bandColor?: string
   /** Etykieta platformy („PS5”, „Xbox Series”). Pusta = bez skrótu, wymiary jak PC. */
   platform: string
   score?: number | null
@@ -24,7 +27,22 @@ export interface SpineProps {
   href?: string
 }
 
-export function Spine({ title, status, platform, score, colors, selected, onSelect, size, label, href }: SpineProps) {
+export function Spine({
+  title,
+  status,
+  statusLabel,
+  bandColor,
+  platform,
+  score,
+  colors,
+  selected,
+  onSelect,
+  size,
+  label,
+  href,
+}: SpineProps) {
+  const stLabel = statusLabel ?? (status ? STATUS[status].label : '')
+  const band = bandColor ?? (status ? STATUS[status].color : 'var(--line-strong)')
   const { width, height } = size ?? gameSpineSize(platform)
   const style = {
     '--spine-w': `${width}px`,
@@ -32,7 +50,7 @@ export function Spine({ title, status, platform, score, colors, selected, onSele
     '--spine-color': colors.color,
     '--spine-accent': colors.accent,
     '--spine-ink': colors.ink,
-    '--spine-band': STATUS[status].color,
+    '--spine-band': band,
   } as CSSProperties
 
   const content = (
@@ -53,7 +71,7 @@ export function Spine({ title, status, platform, score, colors, selected, onSele
   // Grzbiet-odnośnik (np. mini-półki na Odkryj i w profilu) zamiast przycisku z zaznaczeniem.
   if (href) {
     return (
-      <Link to={href} className={styles.spine} style={style} aria-label={spineAriaLabel(title, status, score)}>
+      <Link to={href} className={styles.spine} style={style} aria-label={spineAriaLabel(title, stLabel, score)}>
         {content}
       </Link>
     )
@@ -64,7 +82,7 @@ export function Spine({ title, status, platform, score, colors, selected, onSele
       type="button"
       className={styles.spine}
       style={style}
-      aria-label={spineAriaLabel(title, status, score)}
+      aria-label={spineAriaLabel(title, stLabel, score)}
       aria-pressed={selected ?? false}
       onClick={onSelect}
     >

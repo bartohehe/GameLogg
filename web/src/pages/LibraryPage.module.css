@@ -254,3 +254,13 @@
 .sheetSpacer {
   height: 150px;
 }
+
+/* Na telefonie dolny pasek nie ma mediów: wejście jest z biblioteki. */
+.mediaLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}

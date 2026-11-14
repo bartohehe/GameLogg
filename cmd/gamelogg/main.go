@@ -16,8 +16,10 @@ import (
 	"github.com/bartohehe/GameLogg/internal/auth"
 	"github.com/bartohehe/GameLogg/internal/config"
 	"github.com/bartohehe/GameLogg/internal/igdb"
+	"github.com/bartohehe/GameLogg/internal/jikan"
 	"github.com/bartohehe/GameLogg/internal/spine"
 	"github.com/bartohehe/GameLogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/tmdb"
 	"github.com/bartohehe/GameLogg/internal/translate"
 	"github.com/bartohehe/GameLogg/web"
 )
@@ -89,6 +91,12 @@ func run() error {
 		games = igdb.New(cfg.IGDBClientID, cfg.IGDBClientSecret)
 	}
 
+	// Interfejs Movies zostaje nil (a nie typowany nil) bez klucza TMDB.
+	var movies api.MovieSource
+	if cfg.TMDBConfigured() {
+		movies = tmdb.New(cfg.TMDBAPIKey)
+	}
+
 	var translator api.Translator
 	if cfg.TranslationEnabled {
 		translator = translate.New(db)
@@ -104,6 +112,9 @@ func run() error {
 			Games:      games,
 			Spines:     spine.NewExtractor(),
 			Translator: translator,
+			Media:      db,
+			Movies:     movies,
+			Anime:      jikan.New(),
 			Auth:       authDeps,
 			Features: api.Features{
 				AuthEnabled:        cfg.AuthEnabled,

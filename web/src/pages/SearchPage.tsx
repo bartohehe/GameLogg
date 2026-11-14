@@ -8,6 +8,7 @@ import { ApiError } from '../lib/api'
 import { gamesApi, type SearchResult } from '../lib/games'
 import { countResults } from '../lib/plural'
 import { useConfig } from '../lib/session'
+import { countTitles, lengthText, MEDIA_STATUS, mediaApi, SOURCE_LABEL, TYPE_LABEL, useAddMedia, type MediaResult } from '../lib/media'
 import { STATUS } from '../lib/status'
 import styles from './SearchPage.module.css'
 
@@ -176,7 +177,7 @@ export function SearchPage() {
       <label htmlFor="q" className={styles.label}>
         Czego szukasz?
       </label>
-      <SearchField key={seed} initial={q} count={tab === 'games' ? count : null} onQuery={setQuery} />
+      <SearchField key={seed} initial={q} count={count} onQuery={setQuery} />
 
       <div role="group" aria-label="Szukaj w" className={styles.tabs}>
         <button type="button" aria-pressed={tab === 'games'} onClick={() => setTab('games')}>
@@ -199,8 +200,106 @@ export function SearchPage() {
           </p>
         )
       ) : (
-        <p className={styles.hint}>Wyszukiwanie filmów, seriali i anime pojawi się w etapie 5.</p>
+        <MediaResults q={q} onCount={setCount} />
       )}
     </div>
+  )
+}
+
+function mediaMeta(r: MediaResult) {
+  return [TYPE_LABEL[r.type], r.year, r.creator].filter(Boolean).join(', ')
+}
+
+function MediaRow({ r }: { r: MediaResult }) {
+  const add = useAddMedia()
+  const entry = r.entry ?? (add.data ? { id: add.data.id, status: add.data.status } : null)
+  const extra = [lengthText(r), r.genres.slice(0, 3).join(', ')].filter(Boolean).join(' · ')
+
+  return (
+    <li className={styles.row}>
+      <Cover className={styles.thumb} title={r.title} src={r.coverUrl} showTitle={false} />
+      <div className={styles.info}>
+        <div className={styles.rowTitle}>{r.title}</div>
+        {mediaMeta(r) && <div className={styles.meta}>{mediaMeta(r)}</div>}
+        {extra && <div className={styles.extra}>{extra}</div>}
+      </div>
+      <div className={styles.score}>
+        <div className={`${styles.scoreValue} num`}>{r.score ?? '–'}</div>
+        <div className={styles.scoreSrc}>{SOURCE_LABEL[r.source]}</div>
+      </div>
+      <div className={styles.action}>
+        {entry ? (
+          <Link to={`/media?item=${entry.id}`} className={styles.owned}>
+            <span aria-hidden="true" className={styles.dot} style={{ background: MEDIA_STATUS[entry.status].color }} />
+            Na półce: {MEDIA_STATUS[entry.status].label}
+          </Link>
+        ) : (
+          <button type="button" className="btn btn-primary" aria-busy={add.isPending} onClick={() => add.mutate({ result: r })}>
+            Dodaj do listy<span className="sr-only">: {r.title}</span>
+          </button>
+        )}
+      </div>
+      {add.isError && (
+        <p role="alert" className={styles.rowError}>
+          {add.error.message}
+        </p>
+      )}
+    </li>
+  )
+}
+
+function MediaResults({ q, onCount }: { q: string; onCount: (n: number | null) => void }) {
+  const enabled = q.length >= MIN_QUERY
+  const search = useQuery({
+    queryKey: ['mediaSearch', q],
+    queryFn: () => mediaApi.search(q),
+    enabled,
+    staleTime: 60_000,
+    retry: (n, err) => !(err instanceof ApiError && err.status < 500) && n < 1,
+  })
+  const count = enabled && search.data ? search.data.results.length : null
+  useEffect(() => onCount(count), [count, onCount])
+
+  if (!enabled) return <p className={styles.hint}>Wpisz co najmniej dwa znaki tytułu.</p>
+  if (search.isPending) {
+    return (
+      <p className={styles.hint} role="status">
+        Szukam w TMDB i MyAnimeList…
+      </p>
+    )
+  }
+  if (search.isError) {
+    return (
+      <p className={styles.error} role="alert">
+        {search.error.message}
+      </p>
+    )
+  }
+  const { results, tmdbConfigured, errors } = search.data
+  return (
+    <>
+      {!tmdbConfigured && (
+        <p className={styles.notice}>
+          Filmy i seriale z TMDB są wyłączone: brak TMDB_API_KEY w .env. Pokazuję tylko anime z MyAnimeList.
+        </p>
+      )}
+      {errors.map((e) => (
+        <p key={e.source} role="alert" className={styles.error}>
+          {e.message}
+        </p>
+      ))}
+      {results.length === 0 ? (
+        <p className={styles.hint} role="status">
+          Nic nie znaleziono dla „{q}”. Sprawdź pisownię albo wpisz krótszy fragment tytułu.
+        </p>
+      ) : (
+        <ol className={styles.results} aria-label={countTitles(results.length)}>
+          {results.map((r) => (
+            <MediaRow key={`${r.source}-${r.externalId}`} r={r} />
+          ))}
+        </ol>
+      )}
+      <p className={styles.foot}>Filmy i seriale pochodzą z TMDB, anime z MyAnimeList.</p>
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { DiscoverIcon, LibraryIcon, ProfileIcon, SearchIcon } from '../components/icons'
 import { RankingProvider } from '../features/ranking/RankingProvider'
 import type { User } from '../lib/api'
@@ -12,25 +12,32 @@ function initial(name: string) {
 
 function HeaderSearch() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [q, setQ] = useState('')
+  // Na ekranie mediów pole szuka filmów, seriali i anime zamiast gier.
+  const media = location.pathname.startsWith('/media')
 
   function submit(e: FormEvent) {
     e.preventDefault()
+    const params = new URLSearchParams()
     const query = q.trim()
-    navigate(query ? `/search?q=${encodeURIComponent(query)}` : '/search', { state: { seed: Date.now() } })
+    if (query) params.set('q', query)
+    if (media) params.set('tab', 'media')
+    const qs = params.toString()
+    navigate(qs ? `/search?${qs}` : '/search', { state: { seed: Date.now() } })
   }
 
   return (
     <form role="search" className={styles.search} onSubmit={submit}>
       <label className={styles.searchField}>
         <SearchIcon />
-        <span className="sr-only">Szukaj gry</span>
+        <span className="sr-only">{media ? 'Szukaj filmów, seriali i anime' : 'Szukaj gry'}</span>
         <input
           type="search"
           name="q"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Szukaj w IGDB…"
+          placeholder={media ? 'Szukaj filmów i seriali…' : 'Szukaj w IGDB…'}
           autoComplete="off"
         />
       </label>

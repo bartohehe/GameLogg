@@ -57,9 +57,14 @@ type Deps struct {
 	Spines SpineSource
 	// Translator jest nil, gdy TRANSLATION_ENABLED=false.
 	Translator Translator
-	Auth       AuthDeps
-	Features   Features
-	Version    string
+	// Media, Movies i Anime działają tylko przy Features.MediaEnabled.
+	Media MediaStore
+	// Movies jest nil bez TMDB_API_KEY.
+	Movies   MovieSource
+	Anime    AnimeSource
+	Auth     AuthDeps
+	Features Features
+	Version  string
 	// Web to zbudowany frontend (zawartość web/dist). Może nie zawierać
 	// index.html, jeśli binarkę zbudowano bez frontendu.
 	Web fs.FS
@@ -73,6 +78,9 @@ type server struct {
 	games      GameSource
 	spines     SpineSource
 	translator Translator
+	media      MediaStore
+	movies     MovieSource
+	anime      AnimeSource
 	auth       AuthDeps
 	features   Features
 	version    string
@@ -88,6 +96,9 @@ func NewRouter(d Deps) http.Handler {
 		games:      d.Games,
 		spines:     d.Spines,
 		translator: d.Translator,
+		media:      d.Media,
+		movies:     d.Movies,
+		anime:      d.Anime,
 		auth:       d.Auth,
 		features:   d.Features,
 		version:    d.Version,
@@ -130,6 +141,16 @@ func NewRouter(d Deps) http.Handler {
 			r.Put("/rankings/{category}", s.putRanking)
 
 			r.Get("/stats", s.stats)
+
+			// Bez MEDIA_ENABLED tych tras nie ma: /api/media/* odpowiada 404.
+			if s.features.MediaEnabled {
+				r.Get("/media", s.listMedia)
+				r.Get("/media/search", s.searchMedia)
+				r.Post("/media", s.addMedia)
+				r.Patch("/media/{id}", s.patchMedia)
+				r.Post("/media/{id}/episode", s.mediaEpisode)
+				r.Delete("/media/{id}", s.deleteMedia)
+			}
 		})
 
 		r.NotFound(func(w http.ResponseWriter, _ *http.Request) {
