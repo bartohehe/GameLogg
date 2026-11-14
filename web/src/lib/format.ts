@@ -16,3 +16,10 @@ export function monthYearGenitive(date: Date): string {
 export function longDate(date: Date): string {
   return new Intl.DateTimeFormat('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' }).format(date)
 }
+
+/** „4 września”, a dla innego roku niż bieżący „4 września 2024”. */
+export function dayMonth(date: Date, now = new Date()): string {
+  const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' }
+  if (date.getFullYear() !== now.getFullYear()) opts.year = 'numeric'
+  return new Intl.DateTimeFormat('pl-PL', opts).format(date)
+}

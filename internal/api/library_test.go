@@ -23,6 +23,7 @@ import (
 
 type fakeGames struct {
 	games      map[int64]igdb.Game
+	similar    map[int64][]igdb.Game
 	err        error
 	gameCalls  int
 	lastSearch string

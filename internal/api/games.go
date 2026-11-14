@@ -18,6 +18,8 @@ import (
 type GameSource interface {
 	Search(ctx context.Context, q string) ([]igdb.Game, error)
 	Game(ctx context.Context, id int64) (igdb.Game, error)
+	Popular(ctx context.Context) ([]igdb.Game, error)
+	Similar(ctx context.Context, ids []int64) (map[int64][]igdb.Game, error)
 }
 
 // SpineSource liczy kolory grzbietu z okładki.
@@ -98,7 +100,7 @@ func (s *server) searchGames(w http.ResponseWriter, r *http.Request) {
 type gameDetailsDTO struct {
 	gameDTO
 	Summary string `json:"summary"`
-	// Tłumaczenie opisu dochodzi w etapie 4; do tego czasu zawsze null.
+	// Polskie tłumaczenie opisu; null, gdy wyłączone albo się nie udało.
 	SummaryTranslated *string   `json:"summaryTranslated"`
 	Entry             *entryDTO `json:"entry"`
 }
@@ -131,6 +133,8 @@ func (s *server) gameDetails(w http.ResponseWriter, r *http.Request) {
 		writeInternal(w, r, s.log, err)
 		return
 	}
+
+	out.SummaryTranslated = s.translateSummary(ctx, out.Summary)
 
 	e, err := s.lib.EntryByIGDBID(ctx, userIDFrom(ctx), id)
 	switch {

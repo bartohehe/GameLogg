@@ -18,6 +18,7 @@ import (
 	"github.com/bartohehe/gamelogg/internal/igdb"
 	"github.com/bartohehe/gamelogg/internal/spine"
 	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/gamelogg/internal/translate"
 	"github.com/bartohehe/gamelogg/web"
 )
 
@@ -88,16 +89,22 @@ func run() error {
 		games = igdb.New(cfg.IGDBClientID, cfg.IGDBClientSecret)
 	}
 
+	var translator api.Translator
+	if cfg.TranslationEnabled {
+		translator = translate.New(db)
+	}
+
 	srv := &http.Server{
 		Addr: cfg.Addr(),
 		Handler: api.NewRouter(api.Deps{
-			Log:     log,
-			DB:      db,
-			Users:   db,
-			Library: db,
-			Games:   games,
-			Spines:  spine.NewExtractor(),
-			Auth:    authDeps,
+			Log:        log,
+			DB:         db,
+			Users:      db,
+			Library:    db,
+			Games:      games,
+			Spines:     spine.NewExtractor(),
+			Translator: translator,
+			Auth:       authDeps,
 			Features: api.Features{
 				AuthEnabled:        cfg.AuthEnabled,
 				MediaEnabled:       cfg.MediaEnabled,

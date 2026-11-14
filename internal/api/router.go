@@ -53,40 +53,44 @@ type Deps struct {
 	Users   UserStore
 	Library LibraryStore
 	// Games jest nil, gdy IGDB nie jest skonfigurowane.
-	Games    GameSource
-	Spines   SpineSource
-	Auth     AuthDeps
-	Features Features
-	Version  string
+	Games  GameSource
+	Spines SpineSource
+	// Translator jest nil, gdy TRANSLATION_ENABLED=false.
+	Translator Translator
+	Auth       AuthDeps
+	Features   Features
+	Version    string
 	// Web to zbudowany frontend (zawartość web/dist). Może nie zawierać
 	// index.html, jeśli binarkę zbudowano bez frontendu.
 	Web fs.FS
 }
 
 type server struct {
-	log      *slog.Logger
-	db       Pinger
-	users    UserStore
-	lib      LibraryStore
-	games    GameSource
-	spines   SpineSource
-	auth     AuthDeps
-	features Features
-	version  string
+	log        *slog.Logger
+	db         Pinger
+	users      UserStore
+	lib        LibraryStore
+	games      GameSource
+	spines     SpineSource
+	translator Translator
+	auth       AuthDeps
+	features   Features
+	version    string
 }
 
 // NewRouter składa całe API pod /api oraz frontend z fallbackiem SPA.
 func NewRouter(d Deps) http.Handler {
 	s := &server{
-		log:      d.Log,
-		db:       d.DB,
-		users:    d.Users,
-		lib:      d.Library,
-		games:    d.Games,
-		spines:   d.Spines,
-		auth:     d.Auth,
-		features: d.Features,
-		version:  d.Version,
+		log:        d.Log,
+		db:         d.DB,
+		users:      d.Users,
+		lib:        d.Library,
+		games:      d.Games,
+		spines:     d.Spines,
+		translator: d.Translator,
+		auth:       d.Auth,
+		features:   d.Features,
+		version:    d.Version,
 	}
 
 	r := chi.NewRouter()
@@ -112,6 +116,8 @@ func NewRouter(d Deps) http.Handler {
 			r.Get("/me", s.me)
 
 			r.Get("/games/search", s.searchGames)
+			r.Get("/games/popular", s.popularGames)
+			r.Get("/games/recommendations", s.recommendations)
 			r.Get("/games/{igdbId}", s.gameDetails)
 
 			r.Get("/library", s.listLibrary)
@@ -122,6 +128,8 @@ func NewRouter(d Deps) http.Handler {
 
 			r.Get("/rankings/{category}", s.getRanking)
 			r.Put("/rankings/{category}", s.putRanking)
+
+			r.Get("/stats", s.stats)
 		})
 
 		r.NotFound(func(w http.ResponseWriter, _ *http.Request) {

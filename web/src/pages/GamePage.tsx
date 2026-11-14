@@ -125,12 +125,7 @@ function GameCard({ game }: { game: GameDetails }) {
             </div>
           )}
 
-          <section aria-labelledby="about" className={styles.about}>
-            <h2 id="about" className={styles.h2}>
-              O grze
-            </h2>
-            <p className={styles.summary}>{game.summary || 'IGDB nie ma opisu tej gry.'}</p>
-          </section>
+          <About summary={game.summary} translated={game.summaryTranslated} />
 
           {entry && <RemoveSection entry={entry} />}
         </div>
@@ -371,6 +366,35 @@ function RemoveSection({ entry }: { entry: Entry }) {
           </div>
           {remove.isError && <p className={styles.error}>{remove.error.message}</p>}
         </div>
+      )}
+    </section>
+  )
+}
+
+/** Opis z IGDB: domyślnie polskie tłumaczenie, zawsze z dostępem do oryginału. */
+function About({ summary, translated }: { summary: string; translated: string | null }) {
+  const [original, setOriginal] = useState(false)
+  const showTranslation = translated != null && !original
+
+  return (
+    <section aria-labelledby="about" className={styles.about}>
+      <h2 id="about" className={styles.h2}>
+        O grze
+      </h2>
+      {summary ? (
+        <p className={styles.summary} lang={showTranslation ? 'pl' : 'en'}>
+          {showTranslation ? translated : summary}
+        </p>
+      ) : (
+        <p className={styles.summary}>IGDB nie ma opisu tej gry.</p>
+      )}
+      {translated != null && (
+        <p className={styles.translationNote}>
+          {showTranslation ? 'Opis przetłumaczony automatycznie z angielskiego. ' : 'Oryginalny opis z IGDB. '}
+          <button type="button" className={styles.linkBtn} onClick={() => setOriginal((o) => !o)}>
+            {showTranslation ? 'Pokaż oryginał' : 'Pokaż tłumaczenie'}
+          </button>
+        </p>
       )}
     </section>
   )

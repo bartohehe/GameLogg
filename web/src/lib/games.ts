@@ -86,6 +86,8 @@ export function useInvalidateLibrary() {
       qc.invalidateQueries({ queryKey: ['game'] }),
       qc.invalidateQueries({ queryKey: ['ranking'] }),
       qc.invalidateQueries({ queryKey: ['entryRankings'] }),
+      qc.invalidateQueries({ queryKey: ['stats'] }),
+      qc.invalidateQueries({ queryKey: ['popular'] }),
     ])
 }
 
@@ -148,4 +150,37 @@ export function useEntryRankings(entryId: number | null, enabled = true) {
     queryFn: () => rankingsApi.forEntry(entryId!),
     enabled: enabled && entryId != null,
   })
+}
+
+// --- Odkryj ---
+
+export interface Recommendation {
+  game: Game
+  because: { igdbId: number; title: string; score: number }
+}
+
+export interface YearStats {
+  year: number
+  completed: number
+  abandoned: number
+  averageScore: number | null
+  top: Entry[]
+}
+
+export interface Stats {
+  counts: Record<Status, number>
+  total: number
+  averageScore: number | null
+  top: Entry[]
+  year: YearStats
+}
+
+export const discoverApi = {
+  popular: () => apiFetch<{ results: SearchResult[] }>('/games/popular').then((r) => r.results),
+  recommendations: () => apiFetch<{ items: Recommendation[]; basedOn: number }>('/games/recommendations'),
+  stats: (year: number) => apiFetch<Stats>(`/stats?year=${year}`),
+}
+
+export function useStats(year = new Date().getFullYear()) {
+  return useQuery({ queryKey: ['stats', year], queryFn: () => discoverApi.stats(year) })
 }

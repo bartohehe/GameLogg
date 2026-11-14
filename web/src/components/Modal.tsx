@@ -29,6 +29,9 @@ export function Modal({ labelledBy, onClose, children, width = 760 }: Props) {
     if (!dialog) return
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
     dialog.showModal()
+    // showModal() stawia focus na pierwszym elemencie (zwykle „Zamknij”);
+    // pole oznaczone data-autofocus dostaje go zamiast niego.
+    dialog.querySelector<HTMLElement>('[data-autofocus]')?.focus()
     return () => {
       if (dialog.open) dialog.close()
       if (opener?.isConnected) opener.focus()

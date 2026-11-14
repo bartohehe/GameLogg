@@ -1,0 +1,321 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  padding-top: 44px;
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.error {
+  margin: 0;
+  color: var(--warn);
+  font-size: 14px;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: stretch;
+}
+
+.now {
+  flex: 999 1 560px;
+  min-width: 0;
+}
+
+.hero {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1;
+  font-weight: 850;
+  font-stretch: var(--stretch-display);
+  letter-spacing: -0.025em;
+}
+
+.heroLead {
+  max-width: 56ch;
+  margin: 12px 0 28px;
+  color: var(--muted);
+}
+
+.nowGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coverLink {
+  display: block;
+  text-decoration: none;
+}
+
+.nowCover {
+  font-size: 22px;
+}
+
+.nowTitle {
+  margin: 14px 0 2px;
+  font-size: 17px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.nowTitle a,
+.popTitle a,
+.recTitle a {
+  text-decoration: none;
+}
+
+.nowTitle a:hover,
+.popTitle a:hover,
+.recTitle a:hover {
+  text-decoration: underline;
+}
+
+.nowActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.small {
+  padding: 0 14px;
+}
+
+.year {
+  flex: 1 1 300px;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.yearTitle {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 800;
+  font-stretch: 110%;
+}
+
+.dist {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--line);
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.legendLabel {
+  flex: 1;
+}
+
+.yearTop {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.h3 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.miniShelf {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  padding: 0 4px;
+}
+
+.sectionHead {
+  margin-bottom: 20px;
+}
+
+.h2 {
+  margin: 0 0 4px;
+  font-size: 28px;
+  font-weight: 800;
+  font-stretch: var(--stretch-heading);
+  letter-spacing: -0.015em;
+}
+
+.popGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 24px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.popCover {
+  font-size: 17px;
+}
+
+.popTitle {
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: 650;
+}
+
+.popMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.plus,
+.ownedDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.plus:hover {
+  border-color: var(--accent);
+}
+
+.ownedDot span {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.recGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rec {
+  display: flex;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.recThumb {
+  flex: 0 0 72px;
+  width: 72px;
+  height: 96px;
+  border-radius: 6px;
+}
+
+.recBody {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recTitle {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.recAdd,
+.recAdded {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  margin-top: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.recAdded {
+  color: var(--muted);
+}
+
+@media (max-width: 719.98px) {
+  .page {
+    gap: 44px;
+    padding-top: 22px;
+  }
+
+  .nowGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 14px;
+  }
+
+  .nowCover {
+    font-size: 16px;
+  }
+
+  .year {
+    max-width: none;
+    padding: 20px;
+  }
+
+  .popGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 14px;
+  }
+
+  .h2 {
+    font-size: 24px;
+  }
+
+  .recGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,5 +1,6 @@
 .spine {
   --scale: 1;
+  text-decoration: none;
   position: relative;
   flex: 0 0 auto;
   display: flex;

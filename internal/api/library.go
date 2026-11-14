@@ -28,6 +28,8 @@ type LibraryStore interface {
 	Ranking(ctx context.Context, userID int64, cat ranking.Category) ([]store.RankedEntry, error)
 	SetRanking(ctx context.Context, userID int64, cat ranking.Category, ids []int64) (map[int64]*int, error)
 	EntryPlaces(ctx context.Context, userID, entryID int64) (map[ranking.Category]ranking.Place, map[ranking.Category]int, error)
+	TopRated(ctx context.Context, userID int64, limit int) ([]store.LibraryEntry, error)
+	Stats(ctx context.Context, userID int64, year int) (store.Stats, error)
 }
 
 const maxNoteRunes = 5000

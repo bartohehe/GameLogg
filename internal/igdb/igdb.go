@@ -63,6 +63,10 @@ type Client struct {
 	mu      sync.Mutex
 	token   string
 	expires time.Time
+
+	popMu          sync.Mutex
+	popular        []Game
+	popularExpires time.Time
 }
 
 // Option zmienia ustawienia klienta (używane w testach).

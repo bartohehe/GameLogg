@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { longDate, monthYearGenitive } from './format'
+import { dayMonth, longDate, monthYearGenitive } from './format'
 
 describe('monthYearGenitive', () => {
   it.each([
@@ -15,5 +15,15 @@ describe('monthYearGenitive', () => {
 describe('longDate', () => {
   it('formatuje pełną datę po polsku', () => {
     expect(longDate(new Date(2022, 1, 25))).toBe('25 lutego 2022')
+  })
+})
+
+describe('dayMonth', () => {
+  const now = new Date(2026, 10, 14)
+  it('bez roku w bieżącym roku', () => {
+    expect(dayMonth(new Date(2026, 8, 4), now)).toBe('4 września')
+  })
+  it('z rokiem dla innego roku', () => {
+    expect(dayMonth(new Date(2024, 2, 3), now)).toBe('3 marca 2024')
   })
 })
