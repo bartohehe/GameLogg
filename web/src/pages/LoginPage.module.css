@@ -1,0 +1,208 @@
+.screen {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100dvh;
+}
+
+.hero {
+  flex: 999 1 560px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 56px 0;
+  overflow: hidden;
+}
+
+.brand {
+  margin: 0;
+  font-size: clamp(56px, 7.5vw, 88px);
+  line-height: 0.9;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.04em;
+}
+
+.tagline {
+  margin: 20px 0 0;
+  font-size: 22px;
+  color: var(--text-2);
+  max-width: 28ch;
+}
+
+.decor {
+  margin-top: 48px;
+  padding-bottom: 56px;
+}
+
+.decorRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  padding: 0 10px;
+}
+
+.decorSpine {
+  flex: 0 0 auto;
+  border-radius: 3px 3px 1px 1px;
+  border-top: 7px solid;
+}
+
+.board {
+  height: 14px;
+  background: var(--line);
+  border-radius: 2px;
+  box-shadow: inset 0 2px 0 var(--line-strong);
+}
+
+.panel {
+  flex: 1 1 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  background: var(--surface);
+  border-left: 1px solid var(--surface-2);
+}
+
+.panelInner {
+  width: 100%;
+  max-width: 380px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.tabs button {
+  flex: 1;
+  min-height: var(--tap);
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tabs button:hover {
+  color: var(--text);
+}
+
+.tabs button[aria-pressed='true'] {
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.form {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  margin: 0;
+  font-size: 32px;
+  line-height: 1.1;
+  font-weight: 850;
+  font-stretch: var(--stretch-heading);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 400;
+  font-size: var(--text-base);
+}
+
+.field::placeholder {
+  color: var(--muted);
+}
+
+.field:focus-visible {
+  outline-offset: 1px;
+}
+
+.field[aria-invalid='true'] {
+  border-color: var(--warn);
+}
+
+.error {
+  margin: 0;
+  min-height: 1.5em;
+  color: var(--warn);
+  font-size: 14px;
+}
+
+.error:empty {
+  min-height: 0;
+  margin-top: -18px;
+}
+
+.submit {
+  min-height: 50px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.hint strong {
+  color: var(--text-2);
+}
+
+@media (max-width: 719.98px) {
+  .hero {
+    flex-basis: 100%;
+    padding: 32px var(--gutter) 0;
+  }
+
+  .brand {
+    font-size: 48px;
+  }
+
+  .tagline {
+    margin-top: 12px;
+    font-size: 16px;
+  }
+
+  .decor {
+    margin-top: 20px;
+    padding-bottom: 0;
+  }
+
+  /* Na telefonie półka jest tylko akcentem: formularz ma się zmieścić bez przewijania. */
+  .decorRow {
+    zoom: 0.45;
+  }
+
+  .board {
+    height: 8px;
+  }
+
+  .panel {
+    padding: 32px var(--gutter) 48px;
+    border-left: 0;
+    border-top: 1px solid var(--surface-2);
+  }
+}

@@ -1,0 +1,50 @@
+:root {
+  /* Kolory z redesignu */
+  --bg: #1b1923; /* tło */
+  --bg-deep: #121117; /* tło pod modalem */
+  --surface: #24212e; /* panele, karty */
+  --surface-2: #2c2937; /* aktywne elementy nawigacji */
+  --bar: #16141c; /* dolny pasek na telefonie */
+  --line: #34303f; /* obramowania, deska półki */
+  --line-strong: #46415a;
+  --text: #eeeaf4;
+  --text-2: #cfc8db;
+  --muted: #a49db2;
+  /* --faint ma 4,8:1 na --bg, ale tylko 4,3:1 na --surface: na panelach używaj --muted. */
+  --faint: #8a8398;
+  --accent: #7fd8be; /* główne akcje */
+  --accent-ink: #14231e; /* tekst na --accent */
+  --score: #f2c14e; /* oceny */
+  --warn: #f0b08a; /* komunikaty błędów */
+
+  --st-in-progress: #7fd8be;
+  --st-planned: #8ea8ff;
+  --st-completed: #f2c14e;
+  --st-on-hold: #f0935a;
+  --st-wishlist: #f28dba;
+  --st-abandoned: #8a8398;
+
+  /* Typografia: jedna rodzina, charakter daje oś szerokości (62–125%). */
+  --font: 'Archivo Variable', system-ui, sans-serif;
+  --text-base: 15px;
+  --leading: 1.5;
+  --stretch-display: 122%;
+  --stretch-heading: 115%;
+  --stretch-spine: 72%;
+
+  /* Kształty i odstępy */
+  --radius-sm: 8px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --tap: 44px; /* minimalny cel dotyku */
+  --gutter: 40px;
+  --bottom-bar: 64px;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (max-width: 719.98px) {
+  :root {
+    --gutter: 16px;
+  }
+}

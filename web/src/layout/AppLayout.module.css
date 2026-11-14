@@ -1,0 +1,176 @@
+.shell {
+  min-height: 100dvh;
+}
+
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip:focus {
+  top: 12px;
+  color: var(--accent-ink);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  padding: 18px var(--gutter);
+  border-bottom: 1px solid var(--surface-2);
+}
+
+@media (max-width: 1199.98px) {
+  .header {
+    column-gap: 16px;
+  }
+}
+
+.wordmark {
+  font-size: 26px;
+  font-weight: 800;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1 1 auto;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.navLink.active {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.search {
+  flex: 0 1 300px;
+  min-width: 0;
+}
+
+@media (max-width: 1199.98px) {
+  .search {
+    flex-basis: 200px;
+  }
+}
+
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.searchField:focus-within {
+  border-color: var(--accent);
+}
+
+.searchField input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+}
+
+.searchField input::placeholder {
+  color: var(--muted);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.avatar.active {
+  border: 2px solid var(--accent);
+}
+
+.main:focus {
+  outline: none;
+}
+
+/* Dolny pasek tylko na telefonie */
+.tabbar {
+  display: none;
+}
+
+@media (max-width: 719.98px) {
+  .header {
+    display: none;
+  }
+
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    height: calc(var(--bottom-bar) + env(safe-area-inset-bottom));
+    padding: 0 8px env(safe-area-inset-bottom);
+    background: var(--bar);
+    border-top: 1px solid var(--surface-2);
+  }
+
+  .tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 56px;
+    color: var(--muted);
+    font-size: 11px;
+    text-decoration: none;
+  }
+
+  .tab.active {
+    color: var(--text);
+    font-weight: 700;
+  }
+}

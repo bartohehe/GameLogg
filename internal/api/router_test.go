@@ -26,7 +26,7 @@ var webFS = fstest.MapFS{
 }
 
 func newTestRouter(db Pinger, web fstest.MapFS) http.Handler {
-	d := Deps{Log: testLogger(), DB: db, Version: "1.2.3"}
+	d := Deps{Log: testLogger(), DB: db, Users: newFakeUsers(), Auth: AuthDeps{Enabled: false, OwnerID: 1}, Version: "1.2.3"}
 	if web != nil {
 		d.Web = web
 	}

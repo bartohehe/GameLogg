@@ -25,7 +25,7 @@ func openTestStore(t *testing.T) *Store {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	s, err := Open(ctx, url, slog.New(slog.NewTextHandler(io.Discard, nil)))
+	s, err := Open(ctx, url, discardLogger())
 	if err != nil {
 		t.Fatalf("Open: %v", err)
 	}
@@ -74,3 +74,5 @@ func TestPing(t *testing.T) {
 		t.Fatalf("Ping: %v", err)
 	}
 }
+
+func discardLogger() *slog.Logger { return slog.New(slog.NewTextHandler(io.Discard, nil)) }

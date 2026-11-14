@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/bartohehe/gamelogg/internal/api"
+	"github.com/bartohehe/gamelogg/internal/auth"
 	"github.com/bartohehe/gamelogg/internal/config"
 	"github.com/bartohehe/gamelogg/internal/store"
 	"github.com/bartohehe/gamelogg/web"
@@ -20,6 +21,9 @@ import (
 
 // version jest wstrzykiwana przy buildzie: -ldflags "-X main.version=1.0.0".
 var version = "dev"
+
+// sessionTTL to czas życia sesji po zalogowaniu.
+const sessionTTL = 30 * 24 * time.Hour
 
 func main() {
 	if len(os.Args) > 1 {
@@ -64,11 +68,32 @@ func run() error {
 		return err
 	}
 
+	authDeps := api.AuthDeps{Enabled: cfg.AuthEnabled}
+	if cfg.AuthEnabled {
+		authDeps.Tokens = auth.NewTokens(cfg.JWTSecret, sessionTTL)
+	} else {
+		ownerID, err := db.EnsureOwner(ctx)
+		if err != nil {
+			return err
+		}
+		authDeps.OwnerID = ownerID
+		log.Info("single-user mode: every request acts as owner", "user_id", ownerID)
+	}
+
 	srv := &http.Server{
 		Addr: cfg.Addr(),
 		Handler: api.NewRouter(api.Deps{
-			Log:     log,
-			DB:      db,
+			Log:   log,
+			DB:    db,
+			Users: db,
+			Auth:  authDeps,
+			Features: api.Features{
+				AuthEnabled:        cfg.AuthEnabled,
+				MediaEnabled:       cfg.MediaEnabled,
+				TranslationEnabled: cfg.TranslationEnabled,
+				IGDBConfigured:     cfg.IGDBConfigured(),
+				TMDBConfigured:     cfg.TMDBConfigured(),
+			},
 			Version: version,
 			Web:     web.Dist(),
 		}),
