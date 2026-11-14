@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bartohehe/gamelogg/internal/ranking"
+	"github.com/bartohehe/GameLogg/internal/ranking"
 )
 
 func TestStats(t *testing.T) {

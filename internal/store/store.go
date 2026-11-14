@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 
-	"github.com/bartohehe/gamelogg/internal/migrations"
+	"github.com/bartohehe/GameLogg/internal/migrations"
 )
 
 // Store opakowuje pulę połączeń z Postgresem.

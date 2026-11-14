@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bartohehe/gamelogg/internal/auth"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/auth"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 // fakeUsers to magazyn kont w pamięci, zachowujący się jak store.Store.

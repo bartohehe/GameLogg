@@ -12,14 +12,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bartohehe/gamelogg/internal/api"
-	"github.com/bartohehe/gamelogg/internal/auth"
-	"github.com/bartohehe/gamelogg/internal/config"
-	"github.com/bartohehe/gamelogg/internal/igdb"
-	"github.com/bartohehe/gamelogg/internal/spine"
-	"github.com/bartohehe/gamelogg/internal/store"
-	"github.com/bartohehe/gamelogg/internal/translate"
-	"github.com/bartohehe/gamelogg/web"
+	"github.com/bartohehe/GameLogg/internal/api"
+	"github.com/bartohehe/GameLogg/internal/auth"
+	"github.com/bartohehe/GameLogg/internal/config"
+	"github.com/bartohehe/GameLogg/internal/igdb"
+	"github.com/bartohehe/GameLogg/internal/spine"
+	"github.com/bartohehe/GameLogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/translate"
+	"github.com/bartohehe/GameLogg/web"
 )
 
 // version jest wstrzykiwana przy buildzie: -ldflags "-X main.version=1.0.0".

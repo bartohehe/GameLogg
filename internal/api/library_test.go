@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bartohehe/gamelogg/internal/igdb"
-	"github.com/bartohehe/gamelogg/internal/ranking"
-	"github.com/bartohehe/gamelogg/internal/spine"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/igdb"
+	"github.com/bartohehe/GameLogg/internal/ranking"
+	"github.com/bartohehe/GameLogg/internal/spine"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 // --- atrapy ---

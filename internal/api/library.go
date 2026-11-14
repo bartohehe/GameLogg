@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/bartohehe/gamelogg/internal/ranking"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/ranking"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 // LibraryStore to operacje na grach i bibliotece używane przez API.

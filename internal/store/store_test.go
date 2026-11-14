@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bartohehe/gamelogg/internal/migrations"
+	"github.com/bartohehe/GameLogg/internal/migrations"
 )
 
 // openTestStore łączy się z bazą testową wskazaną przez TEST_DATABASE_URL

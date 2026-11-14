@@ -8,8 +8,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/bartohehe/gamelogg/internal/auth"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/auth"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 type userDTO struct {

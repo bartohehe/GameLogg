@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/bartohehe/gamelogg/internal/ranking"
+	"github.com/bartohehe/GameLogg/internal/ranking"
 )
 
 func scoreOf(t *testing.T, s *Store, uid, id int64) *int {

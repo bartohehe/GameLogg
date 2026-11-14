@@ -11,8 +11,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	"github.com/bartohehe/gamelogg/internal/auth"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/auth"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 // Pinger sprawdza dostępność bazy danych.

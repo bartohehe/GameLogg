@@ -9,9 +9,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/bartohehe/gamelogg/internal/igdb"
-	"github.com/bartohehe/gamelogg/internal/spine"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/igdb"
+	"github.com/bartohehe/GameLogg/internal/spine"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 // GameSource to źródło metadanych gier (klient IGDB albo atrapa w testach).

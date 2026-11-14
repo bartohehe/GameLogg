@@ -7,8 +7,8 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/bartohehe/gamelogg/internal/igdb"
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/igdb"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 // --- atrapy ---

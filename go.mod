@@ -1,4 +1,4 @@
-module github.com/bartohehe/gamelogg
+module github.com/bartohehe/GameLogg
 
 go 1.26.0
 

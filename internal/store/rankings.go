@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"github.com/bartohehe/gamelogg/internal/ranking"
+	"github.com/bartohehe/GameLogg/internal/ranking"
 )
 
 // ErrInvalidRanking: lista zawiera duplikaty albo gry, które nie są ukończonymi

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bartohehe/gamelogg/internal/store"
+	"github.com/bartohehe/GameLogg/internal/store"
 )
 
 const sessionCookie = "gamelogg_session"
