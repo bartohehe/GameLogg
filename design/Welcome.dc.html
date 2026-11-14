@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>GameLogg — Pierwsze uruchomienie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1B1923}
+a{color:#EEEAF4}a:hover{color:#7FD8BE}
+*{box-sizing:border-box}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #7FD8BE;outline-offset:3px}
+.nav a{text-decoration:none;color:#A49DB2;padding:10px 14px;border-radius:8px;min-height:44px;display:inline-flex;align-items:center}
+.nav a[aria-current="page"]{color:#EEEAF4;background:#2C2937}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#1B1923;border:1px solid #34303F;border-radius:5px;padding:1px 6px}
+</style>
+</helmet>
+<div style="min-height:1000px;background:#1B1923;color:#EEEAF4;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.5">
+
+<header style="display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;padding:18px 40px;border-bottom:1px solid #2C2937">
+<span style="font-size:26px;font-weight:800;font-stretch:125%;letter-spacing:-0.02em">gamelogg</span>
+<nav class="nav" aria-label="Główna" style="display:flex;flex-wrap:wrap;gap:4px;flex:1 1 auto">
+<a href="Home.dc.html">Odkryj</a>
+<a href="Main.dc.html" aria-current="page">Biblioteka</a>
+<a href="Media.dc.html">Filmy i seriale</a>
+<a href="Multiplayer.dc.html">Multiplayer</a>
+</nav>
+</header>
+
+<main style="max-width:1120px;margin:0 auto;padding:56px 40px 72px">
+<div aria-hidden="true" style="display:flex;align-items:flex-end;gap:6px;padding:0 14px;height:200px">
+<sc-for list="{{ghosts}}" as="g" hint-placeholder-count="14"><span style="{{g}}"></span></sc-for>
+</div>
+<div aria-hidden="true" style="height:14px;background:#34303F;border-radius:2px;box-shadow:inset 0 2px 0 #46415A,0 10px 16px -6px rgba(0,0,0,.6)"></div>
+
+<div style="display:flex;flex-wrap:wrap;gap:48px;margin-top:48px">
+<div style="flex:1 1 360px">
+<h1 style="margin:0;font-size:64px;line-height:.95;font-weight:900;font-stretch:125%;letter-spacing:-0.03em">Pusta półka</h1>
+<p style="margin:18px 0 0;color:#CFC8DB;font-size:18px;max-width:40ch">GameLogg działa na twoim serwerze. Zostały dwa kroki, żeby postawić na półce pierwszą grę.</p>
+</div>
+
+<ol style="flex:1 1 460px;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px">
+<li style="{{step1}}">
+<div style="display:flex;gap:16px;align-items:flex-start">
+<span style="{{badge1}}">{{badge1Text}}</span>
+<div style="flex:1">
+<h2 style="margin:0;font-size:18px;font-weight:750">Połącz z IGDB</h2>
+<sc-if value="{{ok}}" hint-placeholder-val="{{ true }}">
+<p style="margin:4px 0 0;color:#A49DB2">Połączono. Klucze z pliku <code>.env</code> działają.</p>
+</sc-if>
+<sc-if value="{{notOk}}" hint-placeholder-val="{{ false }}">
+<p style="margin:4px 0 0;color:#F0B08A">Wyszukiwanie gier nie zadziała: brak <code>IGDB_CLIENT_ID</code> i <code>IGDB_CLIENT_SECRET</code>.</p>
+<p style="margin:8px 0 0;color:#CFC8DB">Załóż aplikację w Twitch Developer Console, wpisz oba klucze do <code>.env</code> i uruchom ponownie kontener <code>backend</code>.</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px">
+<a href="#" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid #46415A;text-decoration:none;font-weight:600">Instrukcja w README</a>
+<button style="border:0;border-radius:10px;min-height:44px;padding:0 16px;background:#EEEAF4;color:#1B1923;font-weight:700;cursor:pointer">Sprawdź ponownie</button>
+</div>
+</sc-if>
+</div>
+</div>
+</li>
+<li style="{{step2}}">
+<div style="display:flex;gap:16px;align-items:flex-start">
+<span style="{{badge2}}">2</span>
+<div style="flex:1;min-width:0">
+<h2 style="margin:0;font-size:18px;font-weight:750">Dodaj grę, w którą grasz teraz</h2>
+<p style="margin:4px 0 12px;color:#A49DB2">Albo ostatnią, którą skończyłeś. Od niej zaczniesz rankingi.</p>
+<label style="display:flex;align-items:center;gap:10px;background:#1B1923;border:1px solid #46415A;border-radius:10px;padding:0 14px;min-height:48px">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A49DB2" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"></circle><path d="M11 11l3.5 3.5"></path></svg>
+<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Szukaj gry</span>
+<input type="search" placeholder="Wpisz tytuł gry" disabled="{{notOk}}" style="border:0;background:transparent;outline:none;flex:1;min-width:0">
+</label>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"igdbConnected":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals(){
+    var ok=this.props.igdbConnected ?? true;
+    var ghosts=[];
+    var hs=[168,180,160,186,172,190,164,178,184,158,176,188,170,182,166,180,174,162];
+    for(var i=0;i<hs.length;i++) ghosts.push("width:44px;height:"+hs[i]+"px;border:1.5px dashed #3E3A4C;border-bottom:0;border-radius:3px 3px 0 0");
+    var card="background:#24212E;border:1px solid #34303F;border-radius:14px;padding:20px 22px";
+    var b="flex:0 0 30px;height:30px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;";
+    return {
+      ok:ok, notOk:!ok, ghosts:ghosts,
+      step1:card+(ok?"":";border-color:#8A4B2E"),
+      step2:card+(ok?";border-color:#7FD8BE":";opacity:.55"),
+      badge1:b+(ok?"background:#7FD8BE;color:#14231E":"background:#F0935A;color:#2A1408"),
+      badge1Text:ok?"✓":"1",
+      badge2:b+(ok?"background:#EEEAF4;color:#1B1923":"border:1px solid #46415A;color:#A49DB2")
+    };
+  }
+}
+</script>
+</body>
+</html>

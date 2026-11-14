@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>GameLogg — Dodaj na półkę</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121117}
+a{color:#EEEAF4}a:hover{color:#7FD8BE}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #7FD8BE;outline-offset:2px}
+.shelf{border:1px solid #34303F;background:#24212E;border-radius:10px;cursor:pointer;padding:0;overflow:hidden;text-align:left;display:flex;flex-direction:column;min-height:96px}
+.shelf:hover{border-color:#46415A}
+.shelf[aria-pressed="true"]{border-color:#EEEAF4;background:#2C2937;box-shadow:0 0 0 1px #EEEAF4}
+.pl{border:1px solid #34303F;background:#24212E;border-radius:999px;min-height:44px;padding:0 16px;cursor:pointer;color:#CFC8DB}
+.pl[aria-pressed="true"]{background:#EEEAF4;color:#1B1923;border-color:#EEEAF4;font-weight:700}
+@keyframes rise{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}
+.placed{animation:rise .3s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){.placed{animation:none}}
+</style>
+</helmet>
+<div style="width:1200px;height:860px;background:#121117;font-family:'Archivo',system-ui,sans-serif;color:#EEEAF4;font-size:15px;line-height:1.5;display:flex;align-items:center;justify-content:center">
+<div role="dialog" aria-modal="true" aria-labelledby="dlg" style="width:760px;background:#1B1923;border:1px solid #34303F;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.55);overflow:hidden">
+
+<sc-if value="{{choosing}}" hint-placeholder-val="{{ true }}">
+<div style="padding:28px 32px 0;display:flex;gap:20px;align-items:flex-start">
+<div style="flex:0 0 66px;height:88px;border-radius:6px;background:radial-gradient(circle at 50% 36%,#9FD3F2 0 27%,#1F4E9A 27.5% 100%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)"></div>
+<div style="flex:1">
+<h1 id="dlg" style="margin:0;font-size:28px;line-height:1.1;font-weight:850;font-stretch:115%">Persona 3 Reload</h1>
+<p style="margin:4px 0 0;color:#A49DB2">2024, Atlus</p>
+</div>
+<a href="Search.dc.html" aria-label="Zamknij" style="width:44px;height:44px;border-radius:10px;border:1px solid #34303F;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 14 14" stroke="#EEEAF4" stroke-width="1.8" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"></path></svg></a>
+</div>
+
+<div style="padding:26px 32px 0">
+<h2 style="margin:0 0 12px;font-size:16px;font-weight:700">Na którą półkę?</h2>
+<div role="group" aria-label="Status" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+<sc-for list="{{shelves}}" as="s" hint-placeholder-count="6">
+<button class="shelf" aria-pressed="{{s.on}}" onClick="{{s.pick}}">
+<span aria-hidden="true" style="{{s.band}}"></span>
+<span style="padding:10px 14px 12px;display:flex;flex-direction:column">
+<span style="font-weight:750">{{s.label}}</span>
+<span style="color:#A49DB2;font-size:13px;line-height:1.35;margin-top:2px">{{s.hint}}</span>
+</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:24px 32px 0">
+<h2 style="margin:0 0 12px;font-size:16px;font-weight:700">Na czym grasz?</h2>
+<div role="group" aria-label="Platforma" style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{platforms}}" as="p" hint-placeholder-count="5">
+<button class="pl" aria-pressed="{{p.on}}" onClick="{{p.pick}}">{{p.label}}</button>
+</sc-for>
+</div>
+<p style="margin:10px 0 0;color:#8A8398;font-size:13px">Pokazuję tylko platformy, na które gra wyszła.</p>
+</div>
+
+<div style="padding:28px 32px 28px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #2C2937;margin-top:28px">
+<a href="Search.dc.html" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:10px;border:1px solid #46415A;text-decoration:none;font-weight:600">Anuluj</a>
+<button onClick="{{place}}" style="border:0;border-radius:10px;min-height:48px;padding:0 22px;background:#7FD8BE;color:#14231E;font-weight:750;cursor:pointer">Postaw na półce {{chosen}}</button>
+</div>
+</sc-if>
+
+<sc-if value="{{placed}}" hint-placeholder-val="{{ false }}">
+<div class="placed" style="padding:40px 40px 34px;display:flex;flex-direction:column;align-items:center;text-align:center">
+<div aria-hidden="true" style="display:flex;align-items:flex-end;gap:4px">
+<span style="width:40px;height:150px;border-radius:3px;background:linear-gradient(90deg,#2A2140 0 80%,#C9A04B 80% 100%)"></span>
+<span style="width:40px;height:160px;border-radius:3px;background:linear-gradient(90deg,#20305A 0 80%,#F08A3E 80% 100%)"></span>
+<span style="{{newSpine}}"><span style="writing-mode:vertical-rl;transform:rotate(180deg);font-weight:800;font-stretch:72%;font-size:15px;color:#F2F7FF;padding:10px 0">Persona 3 Reload</span></span>
+<span style="width:40px;height:146px;border-radius:3px;background:linear-gradient(90deg,#5A4632 0 80%,#E0B070 80% 100%)"></span>
+</div>
+<div aria-hidden="true" style="width:300px;height:10px;background:#34303F;border-radius:2px;box-shadow:inset 0 2px 0 #46415A"></div>
+<h1 style="margin:28px 0 0;font-size:28px;line-height:1.15;font-weight:850;font-stretch:112%">Persona 3 Reload stoi na półce {{chosen}}</h1>
+<p style="margin:8px 0 0;color:#A49DB2">Platforma: {{platform}}. Zmienisz to w każdej chwili na karcie gry.</p>
+<div style="display:flex;gap:10px;margin-top:26px">
+<button onClick="{{undo}}" style="border:1px solid #46415A;background:transparent;border-radius:10px;min-height:48px;padding:0 18px;font-weight:600;cursor:pointer">Cofnij</button>
+<a href="Main.dc.html" style="display:inline-flex;align-items:center;min-height:48px;padding:0 20px;border-radius:10px;background:#7FD8BE;color:#14231E;text-decoration:none;font-weight:750">Zobacz na półce</a>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":860}}'>
+var SH=[
+["Planned","Planowane","Mam zamiar zagrać","#8EA8FF"],
+["InProgress","W trakcie","Gram teraz","#7FD8BE"],
+["Completed","Ukończone","Skończyłem, od razu ocenię","#F2C14E"],
+["Wishlist","Lista życzeń","Chcę kupić","#F28DBA"],
+["OnHold","Wstrzymane","Odłożyłem na później","#F0935A"],
+["Abandoned","Porzucone","Nie dokończę","#8A8398"]
+];
+var PL=["PC","PS5","PS4","Xbox Series","Xbox One"];
+class Component extends DCLogic {
+  constructor(p){super(p);this.state={s:"Planned",p:"PS5",done:false};}
+  renderVals(){
+    var self=this, st=this.state;
+    var cur=SH.find(function(x){return x[0]===st.s;});
+    return {
+      choosing:!st.done, placed:st.done,
+      chosen:cur[1], platform:st.p,
+      shelves:SH.map(function(s){return {label:s[1],hint:s[2],on:s[0]===st.s,pick:function(){self.setState({s:s[0]});},band:"display:block;height:8px;background:"+s[3]};}),
+      platforms:PL.map(function(p){return {label:p,on:p===st.p,pick:function(){self.setState({p:p});}};}),
+      place:function(){self.setState({done:true});},
+      undo:function(){self.setState({done:false});},
+      newSpine:"width:46px;height:184px;border-radius:3px 3px 1px 1px;display:flex;justify-content:center;background:linear-gradient(90deg,#1F4E9A 0 80%,#9FD3F2 80% 100%);border-top:7px solid "+cur[3]+";transform:translateY(-12px)"
+    };
+  }
+}
+</script>
+</body>
+</html>

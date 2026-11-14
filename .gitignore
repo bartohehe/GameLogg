@@ -1,0 +1,19 @@
+# Sekrety
+.env
+
+# Go
+/bin/
+*.exe
+coverage.out
+
+# Frontend
+web/node_modules/
+web/dist/*
+!web/dist/.gitkeep
+*.tsbuildinfo
+
+# Edytory i system
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

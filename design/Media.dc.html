@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<title>GameLogg — Filmy, seriale i anime</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#1B1923}
+a{color:#EEEAF4}a:hover{color:#7FD8BE}
+*{box-sizing:border-box}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #7FD8BE;outline-offset:3px}
+.nav a{text-decoration:none;color:#A49DB2;padding:10px 14px;border-radius:8px;min-height:44px;display:inline-flex;align-items:center}
+.nav a:hover{color:#EEEAF4;background:#24212E}
+.nav a[aria-current="page"]{color:#EEEAF4;background:#2C2937}
+.seg button{border:0;background:transparent;color:#A49DB2;padding:0 16px;min-height:40px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#EEEAF4;color:#1B1923;font-weight:650}
+.ep{border:1px solid #46415A;background:transparent;border-radius:10px;min-height:44px;padding:0 14px;cursor:pointer;font-weight:650}
+.ep:hover{border-color:#7FD8BE}
+.ms{display:flex;flex-direction:column;align-items:center;justify-content:space-between;border-radius:2px 2px 1px 1px;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+</style>
+</helmet>
+<div style="min-height:1360px;background:#1B1923;color:#EEEAF4;font-family:'Archivo',system-ui,sans-serif;font-size:15px;line-height:1.5">
+
+<header style="display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px;padding:18px 40px;border-bottom:1px solid #2C2937">
+<a href="Home.dc.html" style="text-decoration:none;font-size:26px;font-weight:800;font-stretch:125%;letter-spacing:-0.02em;color:#EEEAF4">gamelogg</a>
+<nav class="nav" aria-label="Główna" style="display:flex;flex-wrap:wrap;gap:4px;flex:1 1 auto">
+<a href="Home.dc.html">Odkryj</a>
+<a href="Main.dc.html">Biblioteka</a>
+<a href="Media.dc.html" aria-current="page">Filmy i seriale</a>
+<a href="Multiplayer.dc.html">Multiplayer</a>
+</nav>
+<a href="Search.dc.html" style="display:inline-flex;align-items:center;gap:10px;background:#24212E;border:1px solid #34303F;border-radius:10px;padding:0 14px;min-height:44px;color:#A49DB2;text-decoration:none;min-width:240px">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#A49DB2" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="5"></circle><path d="M11 11l3.5 3.5"></path></svg>Szukaj filmów i seriali</a>
+<a href="Profile.dc.html" aria-label="Profil: Bartek" style="width:44px;height:44px;border-radius:50%;border:1px solid #34303F;background:#2C2937;font-weight:700;display:inline-flex;align-items:center;justify-content:center;text-decoration:none">B</a>
+</header>
+
+<main style="max-width:1440px;margin:0 auto;padding:36px 40px 72px">
+<div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:32px">
+<div>
+<h1 style="margin:0;font-size:44px;line-height:1.05;font-weight:800;font-stretch:118%;letter-spacing:-0.02em">Filmy, seriale i anime</h1>
+<p style="margin:8px 0 0;color:#A49DB2">18 tytułów. Przy serialach i anime liczysz odcinki, film wystarczy oznaczyć jako obejrzany.</p>
+</div>
+<div class="seg" role="group" aria-label="Rodzaj" style="display:flex;gap:2px;background:#24212E;border:1px solid #34303F;border-radius:10px;padding:3px">
+<sc-for list="{{types}}" as="t" hint-placeholder-count="4"><button aria-pressed="{{t.on}}" onClick="{{t.pick}}">{{t.label}}</button></sc-for>
+</div>
+</div>
+
+<sc-if value="{{hasWatching}}" hint-placeholder-val="{{ true }}">
+<section aria-labelledby="w" style="margin-bottom:44px">
+<h2 id="w" style="margin:0 0 16px;font-size:22px;font-weight:800;font-stretch:112%">Oglądasz</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px">
+<sc-for list="{{watching}}" as="m" hint-placeholder-count="3">
+<article style="display:flex;gap:18px;background:#24212E;border:1px solid #34303F;border-radius:14px;padding:16px">
+<div style="{{m.thumb}}"></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<h3 style="margin:0;font-size:18px;font-weight:750;line-height:1.2">{{m.t}}</h3>
+<p style="margin:2px 0 0;color:#A49DB2;font-size:14px">{{m.type}}, {{m.creator}}</p>
+<div style="margin-top:auto;padding-top:14px">
+<div style="display:flex;justify-content:space-between;font-size:14px"><span>Odcinek {{m.w}} z {{m.e}}</span><span style="color:#A49DB2">zostało {{m.left}}</span></div>
+<div aria-hidden="true" style="height:6px;background:#34303F;border-radius:3px;margin-top:6px;overflow:hidden"><span style="{{m.bar}}"></span></div>
+</div>
+</div>
+<button class="ep" onClick="{{m.inc}}" aria-label="Obejrzałem kolejny odcinek: {{m.t}}" style="align-self:flex-end">+1 odcinek</button>
+</article>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<div style="display:flex;flex-direction:column;gap:34px">
+<sc-for list="{{shelves}}" as="sh" hint-placeholder-count="2">
+<section>
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px">
+<span aria-hidden="true" style="{{sh.dot}}"></span>
+<h2 style="margin:0;font-size:18px;font-weight:700;font-stretch:110%">{{sh.label}}</h2>
+<span style="color:#A49DB2;font-size:14px">{{sh.n}}</span>
+</div>
+<div style="display:flex;align-items:flex-end;gap:4px;padding:14px 12px 0;min-height:214px;overflow-x:auto">
+<sc-for list="{{sh.items}}" as="m" hint-placeholder-count="8">
+<a href="#" class="ms" aria-label="{{m.aria}}" style="{{m.spine}}">
+<span aria-hidden="true" style="{{m.band}}"></span>
+<span style="font-size:10px;font-weight:700;opacity:.8;margin-top:5px">{{m.short}}</span>
+<span style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:13px;font-weight:700;font-stretch:72%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:118px;flex:1;padding:6px 0">{{m.t}}</span>
+<span style="font-size:12px;font-weight:800;margin-bottom:7px;min-height:16px">{{m.scoreText}}</span>
+</a>
+</sc-for>
+</div>
+<div aria-hidden="true" style="height:12px;background:#34303F;border-radius:2px;box-shadow:inset 0 2px 0 #46415A,0 8px 14px -6px rgba(0,0,0,.6)"></div>
+</section>
+</sc-for>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1360}}'>
+var M=[
+{id:1,t:"Frieren: Beyond Journey's End",ty:"Anime",cr:"Madhouse",st:"Watching",e:28,w:19,c1:"#E8EEF2",c2:"#5C8FB8",ink:"#13222F"},
+{id:2,t:"Severance",ty:"Serial",cr:"Dan Erickson",st:"Watching",e:20,w:14,c1:"#1D3A4A",c2:"#E8E6DE",ink:"#EEF3F4"},
+{id:3,t:"The Bear",ty:"Serial",cr:"Christopher Storer",st:"Watching",e:28,w:22,c1:"#2D3A64",c2:"#E6C64A",ink:"#F2F0E6"},
+{id:4,t:"Diuna: Część druga",ty:"Film",cr:"Denis Villeneuve",st:"Backlog",c1:"#C78A4A",c2:"#3A2416",ink:"#24140A"},
+{id:5,t:"Shōgun",ty:"Serial",cr:"Justin Marks",st:"Backlog",c1:"#2A2420",c2:"#B8322A",ink:"#F1E7DA"},
+{id:6,t:"Andor",ty:"Serial",cr:"Tony Gilroy",st:"Backlog",c1:"#4A4A44",c2:"#D8C9A6",ink:"#F2EEE4"},
+{id:7,t:"Look Back",ty:"Anime",cr:"Studio Durian",st:"Backlog",c1:"#F2EADF",c2:"#7A9CC6",ink:"#1E2430"},
+{id:8,t:"Conclave",ty:"Film",cr:"Edward Berger",st:"Backlog",c1:"#8E1E24",c2:"#F0E6D8",ink:"#FFF2EE"},
+{id:9,t:"Dandadan",ty:"Anime",cr:"Science SARU",st:"Backlog",c1:"#F2D64A",c2:"#D93A5A",ink:"#251A06"},
+{id:10,t:"Arcane",ty:"Serial",cr:"Fortiche",st:"Watched",sc:94,c1:"#2B2350",c2:"#4FC3D9",ink:"#EEF4FF"},
+{id:11,t:"Vinland Saga",ty:"Anime",cr:"Wit Studio, MAPPA",st:"Watched",sc:93,c1:"#3A4A5A",c2:"#D9C59A",ink:"#F1EEE6"},
+{id:12,t:"Oppenheimer",ty:"Film",cr:"Christopher Nolan",st:"Watched",sc:90,c1:"#141414",c2:"#E5862E",ink:"#F3EEE6"},
+{id:13,t:"Past Lives",ty:"Film",cr:"Celine Song",st:"Watched",sc:88,c1:"#D8E2EA",c2:"#4D6E8C",ink:"#14202C"},
+{id:14,t:"Fallout",ty:"Serial",cr:"Geneva Robertson-Dworet",st:"Watched",sc:86,c1:"#2E6FA8",c2:"#F2C230",ink:"#F4F7FB"},
+{id:15,t:"Chainsaw Man",ty:"Anime",cr:"MAPPA",st:"Watched",sc:85,c1:"#E8742A",c2:"#1A1A1A",ink:"#1A0E04"},
+{id:16,t:"Blue Lock",ty:"Anime",cr:"8bit",st:"Watched",sc:80,c1:"#1E3FA0",c2:"#E9EEF8",ink:"#F0F4FF"},
+{id:17,t:"The Substance",ty:"Film",cr:"Coralie Fargeat",st:"Watched",sc:79,c1:"#E9E3D6",c2:"#D6336C",ink:"#2A1A20"},
+{id:18,t:"Mickey 17",ty:"Film",cr:"Bong Joon-ho",st:"Watched",sc:74,c1:"#3A5A4A",c2:"#E2D4B0",ink:"#F0EFE8"}
+];
+var TYPES=[["all","Wszystko"],["Film","Filmy"],["Serial","Seriale"],["Anime","Anime"]];
+var SHORT={Film:"Film",Serial:"Serial",Anime:"Anime"};
+class Component extends DCLogic {
+  constructor(p){super(p);this.state={type:"all",eps:{1:19,2:14,3:22}};}
+  renderVals(){
+    var self=this, st=this.state;
+    var list=M.filter(function(m){return st.type==="all"||m.ty===st.type;});
+    function spine(m){
+      var w=m.ty==="Serial"?52:(m.ty==="Anime"?40:32), h=m.ty==="Serial"?190:(m.ty==="Anime"?178:184);
+      return Object.assign({},m,{short:SHORT[m.ty],scoreText:m.sc?String(m.sc):"",aria:m.t+", "+m.ty+(m.sc?", ocena "+m.sc:""),
+        spine:"width:"+w+"px;height:"+h+"px;color:"+m.ink+";text-decoration:none;background:linear-gradient(90deg,"+m.c1+" 0 82%,"+m.c2+" 82% 100%)",
+        band:"display:block;width:100%;height:6px;border-radius:2px 2px 0 0;background:"+(m.st==="Watched"?"#F2C14E":"#8EA8FF")});
+    }
+    var watching=list.filter(function(m){return m.st==="Watching";}).map(function(m){
+      var w=st.eps[m.id];
+      return Object.assign({},m,{type:m.ty,creator:m.cr,w:w,left:m.e-w,
+        thumb:"flex:0 0 72px;height:96px;border-radius:6px;background:linear-gradient(160deg,"+m.c1+" 0 56%,"+m.c2+" 56% 100%)",
+        bar:"display:block;height:100%;width:"+Math.round(w/m.e*100)+"%;background:#7FD8BE;border-radius:3px",
+        inc:function(){var e=Object.assign({},st.eps);e[m.id]=Math.min(m.e,e[m.id]+1);self.setState({eps:e});}});
+    });
+    var back=list.filter(function(m){return m.st==="Backlog";}).map(spine);
+    var seen=list.filter(function(m){return m.st==="Watched";}).map(spine);
+    return {
+      types:TYPES.map(function(t){return {label:t[1],on:t[0]===st.type,pick:function(){self.setState({type:t[0]});}};}),
+      watching:watching, hasWatching:watching.length>0,
+      shelves:[
+        {label:"Do obejrzenia",n:back.length,items:back,dot:"display:inline-block;width:10px;height:10px;border-radius:2px;background:#8EA8FF"},
+        {label:"Obejrzane",n:seen.length,items:seen,dot:"display:inline-block;width:10px;height:10px;border-radius:2px;background:#F2C14E"}
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

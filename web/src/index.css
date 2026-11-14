@@ -1,0 +1,32 @@
+/* Style tymczasowe z etapu 0. Tokeny, font Archivo i layout dochodzą w etapie 1. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #1b1923;
+  color: #eeeaf4;
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.boot {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 24px;
+}
+
+.wordmark {
+  margin: 0;
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.boot-status {
+  color: #a49db2;
+}
