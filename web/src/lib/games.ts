@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiFetch } from './api'
+import type { Category } from './ranking'
 import type { Status } from './status'
 
 export interface SpineColors {
@@ -76,13 +77,15 @@ export function useLibrary(sort: LibrarySort = 'score') {
 }
 
 /** Po każdej zmianie półek odświeżamy wszystko, co pokazuje stan biblioteki. */
-function useInvalidateLibrary() {
+export function useInvalidateLibrary() {
   const qc = useQueryClient()
   return () =>
     Promise.all([
       qc.invalidateQueries({ queryKey: libraryKey }),
       qc.invalidateQueries({ queryKey: ['search'] }),
       qc.invalidateQueries({ queryKey: ['game'] }),
+      qc.invalidateQueries({ queryKey: ['ranking'] }),
+      qc.invalidateQueries({ queryKey: ['entryRankings'] }),
     ])
 }
 
@@ -105,4 +108,44 @@ export function useUpdateEntry() {
 export function useRemoveEntry() {
   const invalidate = useInvalidateLibrary()
   return useMutation({ mutationFn: (id: number) => gamesApi.remove(id), onSuccess: invalidate })
+}
+
+// --- Rankingi ---
+
+export interface RankedItem {
+  position: number
+  entry: Entry
+}
+
+export interface CategoryPlace {
+  category: Category
+  weight: number
+  /** null = gra pominięta w tej kategorii. */
+  position: number | null
+  n: number
+  points: number | null
+}
+
+export interface EntryRankings {
+  score: number | null
+  categories: CategoryPlace[]
+}
+
+export const rankingsApi = {
+  list: (c: Category) =>
+    apiFetch<{ items: RankedItem[] }>(`/rankings/${c}`).then((r) => r.items),
+  put: (c: Category, userGameIds: number[]) =>
+    apiFetch<{ scores: Array<{ id: number; score: number | null }> }>(`/rankings/${c}`, 'PUT', { userGameIds }),
+  forEntry: (entryId: number) => apiFetch<EntryRankings>(`/library/${entryId}/rankings`),
+}
+
+export const rankingKey = (c: Category) => ['ranking', c] as const
+export const entryRankingsKey = (id: number) => ['entryRankings', id] as const
+
+export function useEntryRankings(entryId: number | null, enabled = true) {
+  return useQuery({
+    queryKey: entryRankingsKey(entryId ?? 0),
+    queryFn: () => rankingsApi.forEntry(entryId!),
+    enabled: enabled && entryId != null,
+  })
 }

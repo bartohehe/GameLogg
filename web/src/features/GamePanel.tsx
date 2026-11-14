@@ -1,9 +1,11 @@
 import { Link } from 'react-router'
 import { Cover } from '../components/Cover'
 import { CloseButton } from '../components/Modal'
-import type { Entry } from '../lib/games'
+import { CategoryBreakdown } from '../components/CategoryBreakdown'
+import { useEntryRankings, type Entry } from '../lib/games'
 import { STATUS } from '../lib/status'
 import styles from './GamePanel.module.css'
+import { targetFromEntry, useOpenRanking } from './ranking/context'
 
 function meta(e: Entry) {
   return [e.game.developer, e.game.year].filter(Boolean).join(', ')
@@ -28,6 +30,15 @@ export function GamePanel({ entry }: { entry: Entry | null }) {
       </aside>
     )
   }
+  return <PanelBody entry={entry} />
+}
+
+function PanelBody({ entry }: { entry: Entry }) {
+  const openRanking = useOpenRanking()
+  const completed = entry.status === 'completed'
+  const places = useEntryRankings(entry.id, completed)
+  const rateLabel = entry.score != null ? 'Zmień miejsca w rankingu' : 'Oceń w rankingu'
+
   return (
     <aside aria-label="Wybrana gra" className={styles.panel}>
       <div className={styles.top}>
@@ -47,6 +58,7 @@ export function GamePanel({ entry }: { entry: Entry | null }) {
               <span className={`${styles.score} num`}>{entry.score}</span>
             </div>
             <p className={styles.muted}>Liczona z miejsc w twoich rankingach kategorii.</p>
+            {places.data && <CategoryBreakdown categories={places.data.categories} />}
           </>
         ) : (
           <>
@@ -68,7 +80,12 @@ export function GamePanel({ entry }: { entry: Entry | null }) {
       </div>
 
       <div className={styles.actions}>
-        <Link to={`/game/${entry.game.igdbId}`} className="btn btn-primary">
+        {completed && (
+          <button type="button" className="btn btn-primary" onClick={() => openRanking(targetFromEntry(entry))}>
+            {rateLabel}
+          </button>
+        )}
+        <Link to={`/game/${entry.game.igdbId}`} className={completed ? 'btn btn-ghost' : 'btn btn-primary'}>
           Otwórz kartę gry
         </Link>
       </div>

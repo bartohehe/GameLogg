@@ -6,6 +6,7 @@ import { Board } from '../components/Shelf'
 import { Spine } from '../components/Spine'
 import { useAddGame, useRemoveEntry, type Entry, type Game } from '../lib/games'
 import { ADD_ORDER, STATUS, type Status } from '../lib/status'
+import { targetFromEntry, useOpenRanking } from './ranking/context'
 import styles from './AddGameModal.module.css'
 
 interface Props {
@@ -25,9 +26,23 @@ export function AddGameModal({ game, onClose, initialStatus = 'planned' }: Props
   const [placed, setPlaced] = useState<Entry | null>(null)
   const add = useAddGame()
   const remove = useRemoveEntry()
+  const openRanking = useOpenRanking()
 
   function submit() {
-    add.mutate({ igdbId: game.igdbId, status, platform }, { onSuccess: (entry) => setPlaced(entry) })
+    add.mutate(
+      { igdbId: game.igdbId, status, platform },
+      {
+        onSuccess: (entry) => {
+          // Ukończona gra od razu trafia do oceny w rankingach.
+          if (entry.status === 'completed') {
+            onClose()
+            openRanking(targetFromEntry(entry))
+          } else {
+            setPlaced(entry)
+          }
+        },
+      },
+    )
   }
 
   function undo() {

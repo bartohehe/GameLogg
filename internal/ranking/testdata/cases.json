@@ -1,0 +1,126 @@
+{
+  "_comment": "Wspólne przypadki dla internal/ranking (Go) i web/src/lib/ranking.ts (Vitest). Identyfikatory to user_games.id.",
+  "points": [
+    { "p": 1, "n": 1, "want": 100 },
+    { "p": 1, "n": 2, "want": 100 },
+    { "p": 2, "n": 2, "want": 60 },
+    { "p": 1, "n": 13, "want": 100 },
+    { "p": 2, "n": 13, "want": 96.66666666666667 },
+    { "p": 7, "n": 13, "want": 80 },
+    { "p": 13, "n": 13, "want": 60 },
+    { "p": 3, "n": 5, "want": 80 },
+    { "p": 4, "n": 9, "want": 85 }
+  ],
+  "scores": [
+    { "name": "brak kategorii", "places": {}, "want": null },
+    {
+      "name": "n=1 we wszystkich kategoriach",
+      "places": {
+        "gameplay": { "pos": 1, "n": 1 },
+        "story": { "pos": 1, "n": 1 },
+        "graphics": { "pos": 1, "n": 1 },
+        "audio": { "pos": 1, "n": 1 },
+        "replayability": { "pos": 1, "n": 1 },
+        "difficulty": { "pos": 1, "n": 1 }
+      },
+      "want": 100
+    },
+    {
+      "name": "sześć kategorii, 13 gier",
+      "places": {
+        "gameplay": { "pos": 2, "n": 13 },
+        "story": { "pos": 5, "n": 13 },
+        "graphics": { "pos": 3, "n": 13 },
+        "audio": { "pos": 4, "n": 13 },
+        "replayability": { "pos": 2, "n": 13 },
+        "difficulty": { "pos": 1, "n": 13 }
+      },
+      "want": 93
+    },
+    {
+      "name": "pominięte kategorie nie liczą się do wag",
+      "places": { "gameplay": { "pos": 1, "n": 3 }, "story": { "pos": 3, "n": 3 } },
+      "want": 83
+    },
+    { "name": "tylko trudność, ostatnie miejsce", "places": { "difficulty": { "pos": 2, "n": 2 } }, "want": 60 },
+    {
+      "name": "połówka zaokrąglana w górę (92,5 → 93)",
+      "places": { "audio": { "pos": 1, "n": 3 }, "replayability": { "pos": 4, "n": 9 } },
+      "want": 93
+    }
+  ],
+  "recompute": [
+    {
+      "name": "n=1: jedyna gra ma 100",
+      "rankings": { "gameplay": [1] },
+      "games": [1],
+      "want": { "1": 100 }
+    },
+    {
+      "name": "wstawienie na początek przesuwa pozostałe",
+      "rankings": { "gameplay": [1, 2] },
+      "games": [1, 2],
+      "want": { "1": 100, "2": 60 },
+      "then": {
+        "insert": { "category": "gameplay", "id": 3, "pos": 0 },
+        "games": [1, 2, 3],
+        "rankings": { "gameplay": [3, 1, 2] },
+        "want": { "1": 80, "2": 60, "3": 100 }
+      }
+    },
+    {
+      "name": "wstawienie w środek zmienia n i punkty innych",
+      "rankings": { "gameplay": [1, 2, 3] },
+      "games": [1, 2, 3],
+      "want": { "1": 100, "2": 80, "3": 60 },
+      "then": {
+        "insert": { "category": "gameplay", "id": 4, "pos": 1 },
+        "games": [1, 2, 3, 4],
+        "rankings": { "gameplay": [1, 4, 2, 3] },
+        "want": { "1": 100, "2": 73, "3": 60, "4": 87 }
+      }
+    },
+    {
+      "name": "wstawienie na koniec",
+      "rankings": { "gameplay": [1, 2] },
+      "games": [1, 2],
+      "want": { "1": 100, "2": 60 },
+      "then": {
+        "insert": { "category": "gameplay", "id": 3, "pos": 2 },
+        "games": [1, 2, 3],
+        "rankings": { "gameplay": [1, 2, 3] },
+        "want": { "1": 100, "2": 80, "3": 60 }
+      }
+    },
+    {
+      "name": "przestawienie gry, która już jest w rankingu",
+      "rankings": { "gameplay": [1, 2, 3] },
+      "games": [1, 2, 3],
+      "want": { "1": 100, "2": 80, "3": 60 },
+      "then": {
+        "insert": { "category": "gameplay", "id": 3, "pos": 0 },
+        "games": [1, 2, 3],
+        "rankings": { "gameplay": [3, 1, 2] },
+        "want": { "1": 80, "2": 60, "3": 100 }
+      }
+    },
+    {
+      "name": "pominięcie kategorii i gra bez rankingów",
+      "rankings": { "gameplay": [1, 2], "story": [2, 1] },
+      "games": [1, 2, 3],
+      "want": { "1": 83, "2": 77, "3": null }
+    },
+    {
+      "name": "usunięcie gry z rankingów zmienia oceny innych",
+      "rankings": { "gameplay": [1, 2, 3], "story": [3, 1, 2] },
+      "games": [1, 2, 3],
+      "want": { "1": 92, "2": 72, "3": 77 },
+      "then": {
+        "remove": 1,
+        "games": [2, 3],
+        "rankings": { "gameplay": [2, 3], "story": [3, 2] },
+        "want": { "2": 83, "3": 77 }
+      }
+    }
+  ]
+}

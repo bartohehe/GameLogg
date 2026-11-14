@@ -257,8 +257,9 @@ func removeFromRankings(ctx context.Context, tx pgx.Tx, userID, userGameID int64
 }
 
 // afterRankingChange zagęszcza pozycje (0, 1, 2, …) we wszystkich kategoriach
-// użytkownika. Unikalność pozycji jest odroczona do commitu, więc chwilowe
-// duplikaty w trakcie przenumerowania są dozwolone.
+// użytkownika i przelicza oceny ukończonych gier: zniknięcie gry z rankingu
+// zmienia n i punkty pozostałych. Unikalność pozycji jest odroczona do
+// commitu, więc chwilowe duplikaty w trakcie przenumerowania są dozwolone.
 func afterRankingChange(ctx context.Context, tx pgx.Tx, userID int64) error {
 	_, err := tx.Exec(ctx, `
 		UPDATE category_rankings cr SET position = r.rn - 1
@@ -272,5 +273,6 @@ func afterRankingChange(ctx context.Context, tx pgx.Tx, userID int64) error {
 	if err != nil {
 		return fmt.Errorf("compact rankings: %w", err)
 	}
-	return nil
+	_, err = recomputeScores(ctx, tx, userID)
+	return err
 }

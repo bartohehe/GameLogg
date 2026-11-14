@@ -1,0 +1,313 @@
+.page {
+  max-width: 1280px;
+  padding-top: 28px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  color: var(--muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.side {
+  flex: 0 1 300px;
+  min-width: 240px;
+}
+
+.cover {
+  border-radius: 10px;
+  font-size: 40px;
+}
+
+.meta {
+  margin: 28px 0 0;
+}
+
+.meta dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.meta dd {
+  margin: 2px 0 14px;
+}
+
+.main {
+  flex: 999 1 560px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(40px, 7vw, 84px);
+  line-height: 0.92;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.h2 {
+  display: block;
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.section {
+  margin-top: 36px;
+}
+
+.statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 14px 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.status:hover {
+  border-color: var(--line-strong);
+}
+
+.status[aria-pressed='true'] {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.status:disabled {
+  cursor: progress;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.platformRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.platformRow select {
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.confirm {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px solid #8a4b2e;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.confirm p {
+  margin: 0;
+  color: var(--text-2);
+}
+
+.confirmActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.error {
+  margin: 10px 0 0;
+  color: var(--warn);
+  font-size: 14px;
+}
+
+.rating {
+  margin-top: 44px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.ratingHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.ratingIntro {
+  max-width: 52ch;
+}
+
+.ratingTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  font-stretch: 112%;
+}
+
+.muted {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.bigScoreBox {
+  text-align: right;
+}
+
+.bigScore {
+  color: var(--score);
+  font-size: 88px;
+  line-height: 0.85;
+  font-weight: 900;
+  font-stretch: 118%;
+}
+
+.rateBtn {
+  margin-top: 18px;
+}
+
+.note {
+  margin-top: 40px;
+}
+
+.note textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.note textarea::placeholder {
+  color: var(--muted);
+}
+
+.noteStatus {
+  min-height: 1.5em;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.about {
+  max-width: 68ch;
+  margin-top: 40px;
+}
+
+.summary {
+  margin: 0;
+  color: var(--text-2);
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+.addRow {
+  margin-top: 28px;
+}
+
+.remove {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--surface-2);
+}
+
+.removeBtn {
+  min-height: var(--tap);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.removeBtn:hover {
+  color: var(--warn);
+}
+
+@media (max-width: 719.98px) {
+  .page {
+    padding-top: 12px;
+  }
+
+  .layout {
+    gap: 24px;
+    margin-top: 8px;
+  }
+
+  .side {
+    display: flex;
+    gap: 16px;
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .cover {
+    flex: 0 0 110px;
+    width: 110px;
+    font-size: 16px;
+  }
+
+  .meta {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .meta dd {
+    margin-bottom: 8px;
+  }
+
+  .rating {
+    padding: 18px;
+  }
+
+  .bigScore {
+    font-size: 56px;
+  }
+}

@@ -4,6 +4,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { isUnauthorized } from './lib/api'
 import { meKey, useConfig } from './lib/session'
 import { DiscoverPage } from './pages/DiscoverPage'
+import { GamePage } from './pages/GamePage'
 import { LibraryPage } from './pages/LibraryPage'
 import { LoginPage } from './pages/LoginPage'
 import { Placeholder } from './pages/Placeholder'
@@ -63,7 +64,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'game/:igdbId',
-        element: <Placeholder title="Karta gry" lead="Karta gry z oceną w rankingach pojawi się w etapie 3." />,
+        element: <GamePage />,
       },
       { path: 'media', element: <MediaRoute /> },
       { path: 'profile', element: <ProfilePage /> },

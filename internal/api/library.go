@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
+	"github.com/bartohehe/gamelogg/internal/ranking"
 	"github.com/bartohehe/gamelogg/internal/store"
 )
 
@@ -24,6 +25,9 @@ type LibraryStore interface {
 	AddToLibrary(ctx context.Context, userID, gameID int64, status store.Status, platform string) (store.LibraryEntry, error)
 	UpdateEntry(ctx context.Context, userID, id int64, p store.EntryPatch) (store.LibraryEntry, error)
 	DeleteEntry(ctx context.Context, userID, id int64) error
+	Ranking(ctx context.Context, userID int64, cat ranking.Category) ([]store.RankedEntry, error)
+	SetRanking(ctx context.Context, userID int64, cat ranking.Category, ids []int64) (map[int64]*int, error)
+	EntryPlaces(ctx context.Context, userID, entryID int64) (map[ranking.Category]ranking.Place, map[ranking.Category]int, error)
 }
 
 const maxNoteRunes = 5000

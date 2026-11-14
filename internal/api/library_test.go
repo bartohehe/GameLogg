@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/bartohehe/gamelogg/internal/igdb"
+	"github.com/bartohehe/gamelogg/internal/ranking"
 	"github.com/bartohehe/gamelogg/internal/spine"
 	"github.com/bartohehe/gamelogg/internal/store"
 )
@@ -66,10 +67,11 @@ func (f *fakeSpines) FromCover(_ context.Context, coverURL, title string) (spine
 
 // fakeLibrary odwzorowuje zachowanie store.Store w pamięci.
 type fakeLibrary struct {
-	mu      sync.Mutex
-	games   map[int64]store.Game // po igdb_id
-	entries map[int64]store.LibraryEntry
-	nextID  int64
+	mu       sync.Mutex
+	games    map[int64]store.Game // po igdb_id
+	entries  map[int64]store.LibraryEntry
+	rankings map[int64]ranking.Rankings
+	nextID   int64
 }
 
 func newFakeLibrary() *fakeLibrary {
@@ -467,3 +469,155 @@ func TestEnsureGameFallsBackToStaleCache(t *testing.T) {
 }
 
 func itoa(n int64) string { return strconv.FormatInt(n, 10) }
+
+// --- rankingi w atrapie ---
+
+func (f *fakeLibrary) rankingsFor(uid int64) ranking.Rankings {
+	if f.rankings == nil {
+		f.rankings = map[int64]ranking.Rankings{}
+	}
+	if f.rankings[uid] == nil {
+		f.rankings[uid] = ranking.Rankings{}
+	}
+	return f.rankings[uid]
+}
+
+func (f *fakeLibrary) recompute(uid int64) map[int64]*int {
+	var games []int64
+	for _, e := range f.entries {
+		if e.UserID == uid && e.Status == store.StatusCompleted {
+			games = append(games, e.ID)
+		}
+	}
+	scores := ranking.Recompute(f.rankingsFor(uid), games)
+	for id, sc := range scores {
+		e := f.entries[id]
+		e.Score = sc
+		f.entries[id] = e
+	}
+	return scores
+}
+
+func (f *fakeLibrary) Ranking(_ context.Context, uid int64, cat ranking.Category) ([]store.RankedEntry, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	out := []store.RankedEntry{}
+	for i, id := range f.rankingsFor(uid)[cat] {
+		out = append(out, store.RankedEntry{Position: i + 1, Entry: f.entries[id]})
+	}
+	return out, nil
+}
+
+func (f *fakeLibrary) SetRanking(_ context.Context, uid int64, cat ranking.Category, ids []int64) (map[int64]*int, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	seen := map[int64]bool{}
+	for _, id := range ids {
+		e, ok := f.entries[id]
+		if seen[id] || !ok || e.UserID != uid || e.Status != store.StatusCompleted {
+			return nil, store.ErrInvalidRanking
+		}
+		seen[id] = true
+	}
+	f.rankingsFor(uid)[cat] = slices.Clone(ids)
+	return f.recompute(uid), nil
+}
+
+func (f *fakeLibrary) EntryPlaces(_ context.Context, uid, id int64) (map[ranking.Category]ranking.Place, map[ranking.Category]int, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if e, ok := f.entries[id]; !ok || e.UserID != uid {
+		return nil, nil, store.ErrNotFound
+	}
+	r := f.rankingsFor(uid)
+	sizes := map[ranking.Category]int{}
+	for _, c := range ranking.Categories {
+		sizes[c] = len(r[c])
+	}
+	return r.Places(id), sizes, nil
+}
+
+// --- testy rankingów ---
+
+func addCompleted(t *testing.T, env *libEnv, igdbID int64) int64 {
+	t.Helper()
+	rec := send(t, env.h, http.MethodPost, "/api/library", addRequest{IGDBID: igdbID, Status: store.StatusCompleted, Platform: "PC"})
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("dodawanie %d: %d %s", igdbID, rec.Code, rec.Body)
+	}
+	return decodeBody[entryDTO](t, rec).ID
+}
+
+func TestRankingEndpoints(t *testing.T) {
+	env := newLibEnv(t, true)
+	env.games.games[2] = igdb.Game{ID: 2, Title: "Druga", Platforms: []string{"PC"}}
+	env.games.games[3] = igdb.Game{ID: 3, Title: "Trzecia", Platforms: []string{"PC"}}
+	a, b, c := addCompleted(t, env, 119133), addCompleted(t, env, 2), addCompleted(t, env, 3)
+
+	rec := send(t, env.h, http.MethodPut, "/api/rankings/gameplay", map[string]any{"userGameIds": []int64{b, a, c}})
+	if rec.Code != http.StatusOK {
+		t.Fatalf("put: %d %s", rec.Code, rec.Body)
+	}
+	body := decodeBody[struct{ Scores []scoreDTO }](t, rec)
+	want := map[int64]int{a: 80, b: 100, c: 60}
+	if len(body.Scores) != 3 {
+		t.Fatalf("scores = %+v", body.Scores)
+	}
+	for _, s := range body.Scores {
+		if s.Score == nil || *s.Score != want[s.ID] {
+			t.Errorf("gra %d: %v, oczekiwano %d", s.ID, s.Score, want[s.ID])
+		}
+	}
+
+	list := decodeBody[struct{ Items []rankedDTO }](t, send(t, env.h, http.MethodGet, "/api/rankings/gameplay", nil))
+	if len(list.Items) != 3 || list.Items[0].Entry.ID != b || list.Items[0].Position != 1 || list.Items[1].Entry.Score == nil {
+		t.Errorf("lista = %+v", list.Items)
+	}
+
+	places := decodeBody[struct {
+		Score      *int
+		Categories []categoryPlaceDTO
+	}](t, send(t, env.h, http.MethodGet, "/api/library/"+itoa(a)+"/rankings", nil))
+	if places.Score == nil || *places.Score != 80 || len(places.Categories) != 6 {
+		t.Fatalf("miejsca = %+v", places)
+	}
+	g := places.Categories[0]
+	if g.Category != ranking.Gameplay || g.Weight != 35 || g.Position == nil || *g.Position != 2 || g.N != 3 || *g.Points != 80 {
+		t.Errorf("gameplay = %+v", g)
+	}
+	if s := places.Categories[1]; s.Position != nil || s.Points != nil || s.N != 0 {
+		t.Errorf("story (pominięta) = %+v", s)
+	}
+}
+
+func TestRankingValidation(t *testing.T) {
+	env := newLibEnv(t, true)
+	a := addCompleted(t, env, 119133)
+	planned := decodeBody[entryDTO](t, send(t, env.h, http.MethodPost, "/api/library",
+		addRequest{IGDBID: 7, Status: store.StatusPlanned})).ID
+
+	tests := []struct {
+		name   string
+		path   string
+		body   any
+		status int
+		code   string
+	}{
+		{"nieznana kategoria", "/api/rankings/fun", map[string]any{"userGameIds": []int64{a}}, 404, "unknown_category"},
+		{"brak listy", "/api/rankings/audio", map[string]any{}, 400, "missing_ids"},
+		{"gra nieukończona", "/api/rankings/audio", map[string]any{"userGameIds": []int64{a, planned}}, 400, "invalid_ranking"},
+		{"duplikat", "/api/rankings/audio", map[string]any{"userGameIds": []int64{a, a}}, 400, "invalid_ranking"},
+	}
+	for _, tt := range tests {
+		rec := send(t, env.h, http.MethodPut, tt.path, tt.body)
+		if e := decodeErr(t, rec); rec.Code != tt.status || e.Code != tt.code {
+			t.Errorf("%s: %d %+v", tt.name, rec.Code, e)
+		}
+	}
+	if rec := send(t, env.h, http.MethodPut, "/api/rankings/audio", map[string]any{"userGameIds": []int64{}}); rec.Code != http.StatusOK {
+		t.Errorf("pusta lista: %d", rec.Code)
+	}
+	if rec := send(t, env.h, http.MethodGet, "/api/library/999/rankings", nil); rec.Code != http.StatusNotFound {
+		t.Errorf("nieznany wpis: %d", rec.Code)
+	}
+}

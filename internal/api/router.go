@@ -118,6 +118,10 @@ func NewRouter(d Deps) http.Handler {
 			r.Post("/library", s.addToLibrary)
 			r.Patch("/library/{id}", s.patchEntry)
 			r.Delete("/library/{id}", s.deleteEntry)
+			r.Get("/library/{id}/rankings", s.entryRankings)
+
+			r.Get("/rankings/{category}", s.getRanking)
+			r.Put("/rankings/{category}", s.putRanking)
 		})
 
 		r.NotFound(func(w http.ResponseWriter, _ *http.Request) {

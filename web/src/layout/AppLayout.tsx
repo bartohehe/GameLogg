@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router'
 import { DiscoverIcon, LibraryIcon, ProfileIcon, SearchIcon } from '../components/icons'
+import { RankingProvider } from '../features/ranking/RankingProvider'
 import type { User } from '../lib/api'
 import { useConfig } from '../lib/session'
 import styles from './AppLayout.module.css'
@@ -75,7 +76,9 @@ export function AppLayout({ user }: { user: User }) {
       </header>
 
       <main id="main" tabIndex={-1} className={styles.main}>
-        <Outlet />
+        <RankingProvider>
+          <Outlet />
+        </RankingProvider>
       </main>
 
       <nav aria-label="Główna" className={styles.tabbar}>

@@ -1,0 +1,134 @@
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ticks {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.tick {
+  flex: 1;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.on {
+  background: var(--score);
+}
+
+.ticksTall {
+  gap: 3px;
+  height: 44px;
+  margin-top: 0;
+}
+
+.ticksTall .tick {
+  max-width: 22px;
+  border-radius: 2px 2px 0 0;
+}
+
+.track {
+  position: relative;
+  display: block;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.trackTall {
+  height: 12px;
+  margin-top: 16px;
+}
+
+.marker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 6px;
+  border-radius: 2px;
+  background: var(--score);
+}
+
+.compact {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compactHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.full {
+  display: flex;
+  flex-direction: column;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fullRow {
+  display: grid;
+  grid-template-columns: minmax(110px, 1.1fr) minmax(160px, 3fr) minmax(80px, 0.8fr);
+  align-items: end;
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.fullLabel {
+  font-weight: 700;
+}
+
+.fullTicks {
+  min-width: 0;
+}
+
+.skipped {
+  display: block;
+  padding-bottom: 4px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.fullRight {
+  text-align: right;
+}
+
+.pts {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+@media (max-width: 719.98px) {
+  .fullRow {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'label right'
+      'ticks ticks';
+    gap: 8px 12px;
+  }
+
+  .fullRow > :first-child {
+    grid-area: label;
+  }
+
+  .fullTicks {
+    grid-area: ticks;
+  }
+
+  .fullRight {
+    grid-area: right;
+  }
+}
