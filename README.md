@@ -45,6 +45,16 @@ docker compose up -d
 
 Otwórz `http://localhost:8080` i załóż konto. Grasz sam? Ustaw `AUTH_ENABLED=false`, a GameLogg pominie logowanie i będzie działał na jednym koncie.
 
+### Gotowy obraz zamiast budowania
+
+GitHub Actions publikuje obraz dla `linux/amd64` i `linux/arm64` (np. Raspberry Pi) w GitHub Container Registry: `ghcr.io/bartohehe/gamelogg`. Tagi: `latest` i `main` (ostatni stan gałęzi main), `1.2.3` i `1.2` dla wydań oraz `sha-…` dla każdego commita.
+
+Żeby nie budować obrazu u siebie, w `docker-compose.yml` zamień w serwisie `app` sekcję `build:` i linię `image:` na:
+
+```yaml
+    image: ghcr.io/bartohehe/gamelogg:latest
+```
+
 Komentarze w `.env` trzymaj w osobnych liniach. Docker Compose przy pustej wartości wczytuje komentarz z tej samej linii jako wartość zmiennej; GameLogg wykrywa to przy starcie i zgłasza błąd.
 
 ## Klucze IGDB
@@ -151,6 +161,12 @@ Codzienna kopia z crona (o 3:30, katalog `/srv/backup`):
 
 ```bash
 git pull && docker compose up -d --build
+```
+
+Z gotowym obrazem z GHCR:
+
+```bash
+docker compose pull && docker compose up -d
 ```
 
 Migracje bazy uruchamiają się same przy starcie aplikacji. Wersję widoczną w profilu ustawisz przy budowie:
