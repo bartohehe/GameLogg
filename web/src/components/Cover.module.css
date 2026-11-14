@@ -1,0 +1,21 @@
+.cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+
+.placeholder {
+  display: flex;
+  align-items: flex-end;
+  padding: 12%;
+  overflow: hidden;
+  font-weight: 850;
+  font-stretch: 78%;
+  line-height: 1.05;
+  font-size: clamp(11px, 1.1em, 22px);
+  overflow-wrap: anywhere;
+}

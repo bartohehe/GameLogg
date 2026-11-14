@@ -16,7 +16,7 @@ function HeaderSearch() {
   function submit(e: FormEvent) {
     e.preventDefault()
     const query = q.trim()
-    navigate(query ? `/search?q=${encodeURIComponent(query)}` : '/search')
+    navigate(query ? `/search?q=${encodeURIComponent(query)}` : '/search', { state: { seed: Date.now() } })
   }
 
   return (

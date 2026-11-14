@@ -1,0 +1,256 @@
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.seg {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.seg button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.seg button:hover {
+  color: var(--text);
+}
+
+.seg button[aria-pressed='true'] {
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 650;
+}
+
+.sortLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.sortLabel select {
+  min-height: var(--tap);
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.shelves {
+  flex: 999 1 520px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.shelfHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.shelfDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.shelfTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  font-stretch: 110%;
+}
+
+.shelfCount {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.emptyRow p {
+  margin: 0;
+  padding: 20px 12px 14px;
+  color: var(--faint);
+  font-size: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 28px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.tileCover {
+  font-size: 17px;
+  transition: transform 0.18s var(--ease-out);
+}
+
+.tile:hover .tileCover {
+  transform: translateY(-3px);
+}
+
+.tile[aria-pressed='true'] .tileCover {
+  box-shadow: 0 0 0 3px var(--accent);
+}
+
+.tileTitle {
+  margin-top: 10px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.tileStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tileDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Telefon */
+.mobileHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.addIcon:hover {
+  color: var(--accent-ink);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  margin: 16px calc(-1 * var(--gutter)) 4px;
+  padding: 0 var(--gutter) 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: var(--tap);
+  padding: 0 14px 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+.chipDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.chipCount {
+  opacity: 0.7;
+}
+
+.mobile :global(.page-title) + * {
+  margin-top: 0;
+}
+
+.mobile > div + div {
+  margin-top: 14px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 32px 0;
+  color: var(--muted);
+}
+
+.empty p {
+  margin: 0;
+}
+
+.sheetSpacer {
+  height: 150px;
+}

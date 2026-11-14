@@ -1,0 +1,46 @@
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  min-height: 226px;
+  /* Zapas u góry na podniesiony (zaznaczony) grzbiet. */
+  padding: 16px 12px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-color: var(--line) transparent;
+}
+
+.row::-webkit-scrollbar {
+  height: 8px;
+}
+
+.row::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 4px;
+}
+
+.board {
+  height: 12px;
+  background: var(--line);
+  border-radius: 2px;
+  box-shadow:
+    inset 0 2px 0 var(--line-strong),
+    0 8px 14px -6px rgb(0 0 0 / 0.6);
+}
+
+.thin {
+  height: 9px;
+  box-shadow: inset 0 2px 0 var(--line-strong);
+}
+
+@media (max-width: 719.98px) {
+  .row {
+    min-height: 196px;
+    gap: 4px;
+    padding: 12px 6px 0;
+  }
+
+  .board {
+    height: 10px;
+  }
+}

@@ -15,6 +15,8 @@ import (
 	"github.com/bartohehe/gamelogg/internal/api"
 	"github.com/bartohehe/gamelogg/internal/auth"
 	"github.com/bartohehe/gamelogg/internal/config"
+	"github.com/bartohehe/gamelogg/internal/igdb"
+	"github.com/bartohehe/gamelogg/internal/spine"
 	"github.com/bartohehe/gamelogg/internal/store"
 	"github.com/bartohehe/gamelogg/web"
 )
@@ -80,13 +82,22 @@ func run() error {
 		log.Info("single-user mode: every request acts as owner", "user_id", ownerID)
 	}
 
+	// Interfejs musi zostać nil (a nie typowany nil), gdy IGDB nie jest skonfigurowane.
+	var games api.GameSource
+	if cfg.IGDBConfigured() {
+		games = igdb.New(cfg.IGDBClientID, cfg.IGDBClientSecret)
+	}
+
 	srv := &http.Server{
 		Addr: cfg.Addr(),
 		Handler: api.NewRouter(api.Deps{
-			Log:   log,
-			DB:    db,
-			Users: db,
-			Auth:  authDeps,
+			Log:     log,
+			DB:      db,
+			Users:   db,
+			Library: db,
+			Games:   games,
+			Spines:  spine.NewExtractor(),
+			Auth:    authDeps,
 			Features: api.Features{
 				AuthEnabled:        cfg.AuthEnabled,
 				MediaEnabled:       cfg.MediaEnabled,

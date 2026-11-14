@@ -48,9 +48,13 @@ type AuthDeps struct {
 // Deps to zależności routera. Pola są interfejsami, żeby testy mogły
 // podstawić atrapy bez sieci i bazy.
 type Deps struct {
-	Log      *slog.Logger
-	DB       Pinger
-	Users    UserStore
+	Log     *slog.Logger
+	DB      Pinger
+	Users   UserStore
+	Library LibraryStore
+	// Games jest nil, gdy IGDB nie jest skonfigurowane.
+	Games    GameSource
+	Spines   SpineSource
 	Auth     AuthDeps
 	Features Features
 	Version  string
@@ -63,6 +67,9 @@ type server struct {
 	log      *slog.Logger
 	db       Pinger
 	users    UserStore
+	lib      LibraryStore
+	games    GameSource
+	spines   SpineSource
 	auth     AuthDeps
 	features Features
 	version  string
@@ -74,6 +81,9 @@ func NewRouter(d Deps) http.Handler {
 		log:      d.Log,
 		db:       d.DB,
 		users:    d.Users,
+		lib:      d.Library,
+		games:    d.Games,
+		spines:   d.Spines,
 		auth:     d.Auth,
 		features: d.Features,
 		version:  d.Version,
@@ -100,6 +110,14 @@ func NewRouter(d Deps) http.Handler {
 		r.Group(func(r chi.Router) {
 			r.Use(s.requireUser)
 			r.Get("/me", s.me)
+
+			r.Get("/games/search", s.searchGames)
+			r.Get("/games/{igdbId}", s.gameDetails)
+
+			r.Get("/library", s.listLibrary)
+			r.Post("/library", s.addToLibrary)
+			r.Patch("/library/{id}", s.patchEntry)
+			r.Delete("/library/{id}", s.deleteEntry)
 		})
 
 		r.NotFound(func(w http.ResponseWriter, _ *http.Request) {

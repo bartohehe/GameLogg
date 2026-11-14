@@ -3,9 +3,12 @@ import { Component, Suspense, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { isUnauthorized } from './lib/api'
 import { meKey, useConfig } from './lib/session'
+import { DiscoverPage } from './pages/DiscoverPage'
+import { LibraryPage } from './pages/LibraryPage'
 import { LoginPage } from './pages/LoginPage'
 import { Placeholder } from './pages/Placeholder'
 import { ProfilePage } from './pages/ProfilePage'
+import { SearchPage } from './pages/SearchPage'
 import { ErrorScreen } from './routes/ErrorScreen'
 import { AuthOnly, RequireUser } from './routes/guards'
 
@@ -48,15 +51,15 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Placeholder title="Odkryj" lead="Gry w trakcie, popularne premiery i polecenia pojawią się w etapie 4." />,
+        element: <DiscoverPage />,
       },
       {
         path: 'library',
-        element: <Placeholder title="Biblioteka" lead="Sześć półek z twoimi grami pojawi się w etapie 2." />,
+        element: <LibraryPage />,
       },
       {
         path: 'search',
-        element: <Placeholder title="Czego szukasz?" lead="Wyszukiwanie w IGDB pojawi się w etapie 2." />,
+        element: <SearchPage />,
       },
       {
         path: 'game/:igdbId',

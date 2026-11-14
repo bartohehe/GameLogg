@@ -1,0 +1,212 @@
+.page {
+  max-width: 1120px;
+  padding-top: 56px;
+}
+
+.ghosts {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 200px;
+  padding: 0 14px;
+  overflow: hidden;
+}
+
+.ghost {
+  flex: 0 0 44px;
+  border: 1.5px dashed #3e3a4c;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  margin-top: 48px;
+}
+
+.intro {
+  flex: 1 1 360px;
+}
+
+.title {
+  margin: 0;
+  font-size: 64px;
+  line-height: 0.95;
+  font-weight: 900;
+  font-stretch: 125%;
+  letter-spacing: -0.03em;
+}
+
+.lead {
+  margin: 18px 0 0;
+  max-width: 40ch;
+  color: var(--text-2);
+  font-size: 18px;
+}
+
+.steps {
+  flex: 1 1 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.stepWarn {
+  border-color: #8a4b2e;
+}
+
+.stepActive {
+  border-color: var(--accent);
+}
+
+.stepDisabled {
+  opacity: 0.55;
+}
+
+.badge {
+  flex: 0 0 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.badgeOk {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.badgeWarn {
+  background: var(--st-on-hold);
+  color: #2a1408;
+}
+
+.badgeNext {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.badgeIdle {
+  border: 1px solid var(--line-strong);
+  color: var(--muted);
+}
+
+.stepBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.muted {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.warn {
+  margin: 4px 0 0;
+  color: var(--warn);
+}
+
+.text {
+  margin: 8px 0 0;
+  color: var(--text-2);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.light {
+  background: var(--text);
+  color: var(--bg);
+}
+
+.light:hover {
+  color: var(--bg);
+}
+
+.search {
+  margin-top: 12px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.field:focus-within {
+  border-color: var(--accent);
+}
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+}
+
+.field input::placeholder {
+  color: var(--muted);
+}
+
+@media (max-width: 719.98px) {
+  .page {
+    padding-top: 24px;
+  }
+
+  .ghosts {
+    zoom: 0.6;
+  }
+
+  .grid {
+    gap: 24px;
+    margin-top: 28px;
+  }
+
+  .title {
+    font-size: 44px;
+  }
+
+  .lead {
+    font-size: 16px;
+  }
+
+  .step {
+    padding: 16px;
+  }
+}
