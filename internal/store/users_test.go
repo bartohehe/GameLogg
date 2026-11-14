@@ -80,3 +80,22 @@ func TestEnsureOwnerIdempotent(t *testing.T) {
 		t.Errorf("owner = %+v, %v", u, err)
 	}
 }
+
+func TestUpdatePassword(t *testing.T) {
+	s := migratedStore(t)
+	ctx := context.Background()
+	u, _ := s.CreateUser(ctx, "jan", "jan@example.com", "stary")
+	if u.PasswordChangedAt != nil {
+		t.Error("nowe konto ma datę zmiany hasła")
+	}
+	if err := s.UpdatePassword(ctx, u.ID, "nowy"); err != nil {
+		t.Fatal(err)
+	}
+	got, _ := s.UserByID(ctx, u.ID)
+	if got.PasswordHash != "nowy" || got.PasswordChangedAt == nil {
+		t.Errorf("po zmianie: %+v", got)
+	}
+	if err := s.UpdatePassword(ctx, 99999, "x"); !errors.Is(err, ErrNotFound) {
+		t.Errorf("nieistniejące konto: err = %v", err)
+	}
+}

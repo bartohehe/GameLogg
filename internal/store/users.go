@@ -28,14 +28,16 @@ type User struct {
 	Username     string
 	Email        string
 	PasswordHash string
-	CreatedAt    time.Time
+	// PasswordChangedAt: tokeny wystawione wcześniej (z dokładnością do sekundy) są nieważne.
+	PasswordChangedAt *time.Time
+	CreatedAt         time.Time
 }
 
-const userColumns = `id, username, email, password_hash, created_at`
+const userColumns = `id, username, email, password_hash, password_changed_at, created_at`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
-	err := row.Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
+	err := row.Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash, &u.PasswordChangedAt, &u.CreatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return User{}, ErrNotFound
 	}
@@ -91,4 +93,17 @@ func (s *Store) EnsureOwner(ctx context.Context) (int64, error) {
 		return 0, fmt.Errorf("ensure owner: %w", err)
 	}
 	return id, nil
+}
+
+// UpdatePassword zapisuje nowy hash hasła i moment zmiany.
+func (s *Store) UpdatePassword(ctx context.Context, userID int64, passwordHash string) error {
+	tag, err := s.pool.Exec(ctx,
+		`UPDATE users SET password_hash = $2, password_changed_at = now() WHERE id = $1`, userID, passwordHash)
+	if err != nil {
+		return fmt.Errorf("update password: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
 }

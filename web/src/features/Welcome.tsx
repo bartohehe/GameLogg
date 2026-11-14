@@ -73,8 +73,13 @@ export function Welcome() {
                     kontener <code>app</code>.
                   </p>
                   <div className={styles.row}>
-                    <a className="btn btn-ghost" href="https://dev.twitch.tv/console/apps" target="_blank" rel="noreferrer">
-                      Twitch Developer Console
+                    <a
+                      className="btn btn-ghost"
+                      href="https://github.com/bartohehe/GameLogg#klucze-igdb"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Instrukcja w README
                     </a>
                     <button type="button" className={`btn ${styles.light}`} aria-busy={checking} onClick={recheck}>
                       Sprawdź ponownie

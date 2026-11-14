@@ -425,3 +425,10 @@
     min-height: var(--tap);
   }
 }
+
+/* Na ekranach dotykowych szczeliny mają pełne 44 px. */
+@media (pointer: coarse) {
+  .slot {
+    min-height: var(--tap);
+  }
+}

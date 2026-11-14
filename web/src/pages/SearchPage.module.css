@@ -106,6 +106,9 @@
 }
 
 .rowTitle {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   font-size: 18px;
   font-weight: 750;
   line-height: 1.25;

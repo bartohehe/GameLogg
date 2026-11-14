@@ -63,7 +63,7 @@
 }
 
 .nowTitle {
-  margin: 14px 0 2px;
+  margin: 6px 0 0;
   font-size: 17px;
   line-height: 1.25;
   font-weight: 700;
@@ -73,6 +73,10 @@
 .popTitle a,
 .recTitle a {
   text-decoration: none;
+  /* Cel dotyku 44 px także dla krótkich tytułów. */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
 }
 
 .nowTitle a:hover,
@@ -190,7 +194,7 @@
 }
 
 .popTitle {
-  margin: 10px 0 0;
+  margin: 2px 0 0;
   font-size: 15px;
   line-height: 1.3;
   font-weight: 650;

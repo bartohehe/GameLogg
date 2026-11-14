@@ -3,6 +3,9 @@
 }
 
 .skip {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   position: absolute;
   left: 16px;
   top: -100px;
@@ -36,6 +39,9 @@
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
   font-size: 26px;
   font-weight: 800;
   font-stretch: 125%;

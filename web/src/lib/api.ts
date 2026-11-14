@@ -101,4 +101,6 @@ export const api = {
   register: (username: string, email: string, password: string) =>
     apiFetch<User>('/auth/register', 'POST', { username, email, password }),
   logout: () => apiFetch<void>('/auth/logout', 'POST'),
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiFetch<void>('/me/password', 'PUT', { currentPassword, newPassword }),
 }

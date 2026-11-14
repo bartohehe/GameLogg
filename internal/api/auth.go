@@ -186,3 +186,58 @@ func (s *server) me(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, toUserDTO(u))
 }
+
+type changePasswordRequest struct {
+	CurrentPassword string `json:"currentPassword"`
+	NewPassword     string `json:"newPassword"`
+}
+
+// changePassword zmienia hasło zalogowanego konta. Sesje na innych
+// urządzeniach wygasają, a bieżąca dostaje nowe ciasteczko.
+func (s *server) changePassword(w http.ResponseWriter, r *http.Request) {
+	if !s.auth.Enabled {
+		writeError(w, http.StatusNotFound, "auth_disabled",
+			"Logowanie jest wyłączone na tym serwerze (AUTH_ENABLED=false), więc konto nie ma hasła.")
+		return
+	}
+	var req changePasswordRequest
+	if !decodeJSON(w, r, &req) {
+		return
+	}
+	ctx := r.Context()
+	u, err := s.users.UserByID(ctx, userIDFrom(ctx))
+	if err != nil {
+		writeInternal(w, r, s.log, err)
+		return
+	}
+	switch {
+	case req.CurrentPassword == "":
+		writeFieldError(w, http.StatusBadRequest, "missing_password", "currentPassword", "Wpisz obecne hasło.")
+		return
+	case !auth.CheckPassword(u.PasswordHash, req.CurrentPassword):
+		writeFieldError(w, http.StatusBadRequest, "wrong_password", "currentPassword", "Obecne hasło się nie zgadza.")
+		return
+	}
+	if err := auth.ValidatePassword(req.NewPassword); err != nil {
+		writeFieldError(w, http.StatusBadRequest, "invalid_password", "newPassword", passwordMessage(err))
+		return
+	}
+	if req.NewPassword == req.CurrentPassword {
+		writeFieldError(w, http.StatusBadRequest, "same_password", "newPassword", "Nowe hasło musi się różnić od obecnego.")
+		return
+	}
+	hash, err := auth.HashPassword(req.NewPassword)
+	if err != nil {
+		writeInternal(w, r, s.log, err)
+		return
+	}
+	if err := s.users.UpdatePassword(ctx, u.ID, hash); err != nil {
+		writeInternal(w, r, s.log, err)
+		return
+	}
+	if !s.startSession(w, r, u.ID) {
+		return
+	}
+	s.log.InfoContext(ctx, "password changed", "user_id", u.ID)
+	w.WriteHeader(http.StatusNoContent)
+}

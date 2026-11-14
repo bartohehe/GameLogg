@@ -342,3 +342,78 @@ func TestInvalidJSON(t *testing.T) {
 		}
 	}
 }
+
+func (f *fakeUsers) UpdatePassword(_ context.Context, id int64, hash string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	u, ok := f.users[id]
+	if !ok {
+		return store.ErrNotFound
+	}
+	now := time.Now()
+	u.PasswordHash, u.PasswordChangedAt = hash, &now
+	f.users[id] = u
+	return nil
+}
+
+func TestChangePassword(t *testing.T) {
+	h, users := authRouter(t)
+	c := sessionFrom(t, send(t, h, http.MethodPost, "/api/auth/register", validReg))
+
+	tests := []struct {
+		name  string
+		body  changePasswordRequest
+		code  string
+		field string
+	}{
+		{"brak obecnego", changePasswordRequest{"", "nowe-haslo-123"}, "missing_password", "currentPassword"},
+		{"złe obecne", changePasswordRequest{"zle-haslo", "nowe-haslo-123"}, "wrong_password", "currentPassword"},
+		{"za krótkie nowe", changePasswordRequest{"dobre-haslo", "krotkie"}, "invalid_password", "newPassword"},
+		{"takie samo", changePasswordRequest{"dobre-haslo", "dobre-haslo"}, "same_password", "newPassword"},
+	}
+	for _, tt := range tests {
+		rec := send(t, h, http.MethodPut, "/api/me/password", tt.body, c)
+		if e := decodeErr(t, rec); rec.Code != http.StatusBadRequest || e.Code != tt.code || e.Field != tt.field {
+			t.Errorf("%s: %d %+v", tt.name, rec.Code, e)
+		}
+	}
+
+	rec := send(t, h, http.MethodPut, "/api/me/password", changePasswordRequest{"dobre-haslo", "nowe-haslo-123"}, c)
+	if rec.Code != http.StatusNoContent {
+		t.Fatalf("zmiana: %d %s", rec.Code, rec.Body)
+	}
+	fresh := sessionFrom(t, rec)
+
+	// Bieżąca sesja dostaje nowe ciasteczko i działa dalej.
+	if rec := send(t, h, http.MethodGet, "/api/me", nil, fresh); rec.Code != http.StatusOK {
+		t.Errorf("nowa sesja: %d", rec.Code)
+	}
+	// Logowanie: stare hasło już nie działa, nowe tak.
+	if rec := send(t, h, http.MethodPost, "/api/auth/login", loginRequest{validReg.Email, "dobre-haslo"}); rec.Code != http.StatusUnauthorized {
+		t.Errorf("stare hasło: %d", rec.Code)
+	}
+	if rec := send(t, h, http.MethodPost, "/api/auth/login", loginRequest{validReg.Email, "nowe-haslo-123"}); rec.Code != http.StatusOK {
+		t.Errorf("nowe hasło: %d", rec.Code)
+	}
+
+	// Sesja z tokenem wystawionym przed zmianą hasła wygasa (inne urządzenie).
+	users.mu.Lock()
+	u := users.users[1]
+	later := time.Now().Add(2 * time.Second)
+	u.PasswordChangedAt = &later
+	users.users[1] = u
+	users.mu.Unlock()
+	if rec := send(t, h, http.MethodGet, "/api/me", nil, fresh); rec.Code != http.StatusUnauthorized || decodeErr(t, rec).Code != "session_expired" {
+		t.Errorf("sesja sprzed zmiany hasła: %d", rec.Code)
+	}
+}
+
+func TestChangePasswordWithoutAuth(t *testing.T) {
+	users := newFakeUsers()
+	owner, _ := users.CreateUser(context.Background(), store.OwnerUsername, "owner@localhost", "")
+	h := NewRouter(Deps{Log: testLogger(), DB: fakeDB{}, Users: users, Auth: AuthDeps{OwnerID: owner.ID}})
+	rec := send(t, h, http.MethodPut, "/api/me/password", changePasswordRequest{"a", "nowe-haslo-123"})
+	if rec.Code != http.StatusNotFound || decodeErr(t, rec).Code != "auth_disabled" {
+		t.Errorf("bez logowania: %d", rec.Code)
+	}
+}

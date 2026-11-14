@@ -25,6 +25,7 @@ type UserStore interface {
 	CreateUser(ctx context.Context, username, email, passwordHash string) (store.User, error)
 	UserByEmail(ctx context.Context, email string) (store.User, error)
 	UserByID(ctx context.Context, id int64) (store.User, error)
+	UpdatePassword(ctx context.Context, userID int64, passwordHash string) error
 }
 
 // Features to flagi serwera widoczne publicznie przez /api/config.
@@ -125,6 +126,7 @@ func NewRouter(d Deps) http.Handler {
 		r.Group(func(r chi.Router) {
 			r.Use(s.requireUser)
 			r.Get("/me", s.me)
+			r.Put("/me/password", s.changePassword)
 
 			r.Get("/games/search", s.searchGames)
 			r.Get("/games/popular", s.popularGames)

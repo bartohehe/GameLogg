@@ -102,8 +102,21 @@ func (t *Tokens) Issue(userID int64) (string, time.Time, error) {
 	return s, exp, nil
 }
 
+// Session to dane z poprawnego tokenu sesji.
+type Session struct {
+	UserID   int64
+	IssuedAt time.Time
+}
+
 // Parse weryfikuje token i zwraca identyfikator użytkownika.
 func (t *Tokens) Parse(token string) (int64, error) {
+	s, err := t.ParseSession(token)
+	return s.UserID, err
+}
+
+// ParseSession weryfikuje token i zwraca użytkownika oraz moment wystawienia
+// (potrzebny, żeby zmiana hasła unieważniała starsze sesje).
+func (t *Tokens) ParseSession(token string) (Session, error) {
 	var claims jwt.RegisteredClaims
 	_, err := jwt.ParseWithClaims(token, &claims,
 		func(*jwt.Token) (any, error) { return t.secret, nil },
@@ -112,12 +125,12 @@ func (t *Tokens) Parse(token string) (int64, error) {
 		jwt.WithExpirationRequired(),
 		jwt.WithTimeFunc(t.now),
 	)
-	if err != nil {
-		return 0, ErrInvalidToken
+	if err != nil || claims.IssuedAt == nil {
+		return Session{}, ErrInvalidToken
 	}
 	id, err := strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil || id <= 0 {
-		return 0, ErrInvalidToken
+		return Session{}, ErrInvalidToken
 	}
-	return id, nil
+	return Session{UserID: id, IssuedAt: claims.IssuedAt.Time}, nil
 }

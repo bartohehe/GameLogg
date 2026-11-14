@@ -75,22 +75,31 @@ func (s *server) requireUser(next http.Handler) http.Handler {
 			writeError(w, http.StatusUnauthorized, "unauthorized", "Zaloguj się, żeby zobaczyć tę stronę.")
 			return
 		}
-		id, err := s.auth.Tokens.Parse(c.Value)
-		if err != nil {
+		expired := func() {
 			clearSessionCookie(w, r)
 			writeError(w, http.StatusUnauthorized, "session_expired", "Sesja wygasła. Zaloguj się ponownie.")
+		}
+		sess, err := s.auth.Tokens.ParseSession(c.Value)
+		if err != nil {
+			expired()
 			return
 		}
 		// Konto mogło zostać usunięte po wystawieniu tokenu.
-		if _, err := s.users.UserByID(r.Context(), id); err != nil {
-			if errors.Is(err, store.ErrNotFound) {
-				clearSessionCookie(w, r)
-				writeError(w, http.StatusUnauthorized, "session_expired", "Sesja wygasła. Zaloguj się ponownie.")
-				return
-			}
+		u, err := s.users.UserByID(r.Context(), sess.UserID)
+		if errors.Is(err, store.ErrNotFound) {
+			expired()
+			return
+		}
+		if err != nil {
 			writeInternal(w, r, s.log, err)
 			return
 		}
-		next.ServeHTTP(w, r.WithContext(withUserID(r.Context(), id)))
+		// Zmiana hasła unieważnia sesje wystawione przed nią. Token ma iat
+		// z dokładnością do sekundy, więc porównujemy pełne sekundy.
+		if u.PasswordChangedAt != nil && sess.IssuedAt.Before(u.PasswordChangedAt.Truncate(time.Second)) {
+			expired()
+			return
+		}
+		next.ServeHTTP(w, r.WithContext(withUserID(r.Context(), sess.UserID)))
 	})
 }
